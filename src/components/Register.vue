@@ -71,7 +71,7 @@ export default defineComponent({
               lastName: this.lastName,
               role: this.role
           };
-
+          delete axios.defaults.headers.common["Authorization"];
           const response = await axios.post('register', registerData);
           alert('Success register. Please login.'); 
           this.$router.push('/login');

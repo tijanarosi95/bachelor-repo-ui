@@ -45,12 +45,13 @@ export default defineComponent({
                 username: this.username,
                 password: this.password
             }
+            delete axios.defaults.headers.common["Authorization"];
             const response = await axios.post('login', loginData);
 
             const jwtResponse: JwtResponse = { jwt: response.data.jwt }; 
             localStorage.setItem('token', jwtResponse.jwt);
 
-            this.$router.push('/profile');
+            this.$router.push('/profile')
         }
     }
 });

@@ -8,15 +8,21 @@ export default createRouter({
   routes: [
     {
       path: '/',
-      component: Login
+      component: Login,
+      meta: { requiresAuth: false,
+              forVisitors: true },
     },
     {
       path: '/login',
-      component: Login
+      component: Login,
+      meta: { requiresAuth: false,
+              forVisitors: true },
     },
     {
       path: '/register',
-      component: Register
+      component: Register,
+      meta: { requiresAuth: false,
+              forVisitors: true },
     },
     {
       path: '/profile',
