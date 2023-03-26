@@ -1,5 +1,6 @@
 <template>
   <main>
+    <Navigation />
     <router-view />
   </main>
 </template>
@@ -7,11 +8,13 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
 import HelloWorld from './components/HelloWorld.vue';
+import Navigation from "./components/Navigation.vue";
 
 export default defineComponent ({
   name: 'App',
   components: {
-    HelloWorld
+    HelloWorld,
+    Navigation
   }
 });
 </script>
@@ -27,7 +30,7 @@ body {
   font-family: 'Poppins', sans-serif;
   background-color: #005B96;
 }
-.container {
+/* .container {
   max-width: 500px;
   margin: 30px auto;
   overflow: auto;
@@ -35,7 +38,7 @@ body {
   border: 1px solid steelblue;
   padding: 30px;
   border-radius: 5px;
-}
+} */
 .btn {
   display: inline-block;
   color: #fff;

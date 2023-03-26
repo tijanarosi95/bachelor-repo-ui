@@ -82,7 +82,7 @@ export default defineComponent({
 });
 </script>
 
-<style>
+<style scoped>
 .register-container {
   margin-top: 100px;
   width: fit-content;
