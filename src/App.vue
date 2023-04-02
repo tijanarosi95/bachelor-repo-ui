@@ -1,6 +1,6 @@
 <template>
   <main>
-    <Navigation />
+    <Navigation v-if="!$route.meta.hideNavbar"/>
     <router-view />
   </main>
 </template>
@@ -15,6 +15,12 @@ export default defineComponent ({
   components: {
     HelloWorld,
     Navigation
+  },
+  methods: {
+    isUserLoggedIn(): boolean {
+      console.log(localStorage.getItem('token'));
+      return !!localStorage.getItem('token');
+    }
   }
 });
 </script>

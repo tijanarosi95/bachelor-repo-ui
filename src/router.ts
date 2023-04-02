@@ -10,13 +10,15 @@ export default createRouter({
       path: '/',
       component: Login,
       meta: { requiresAuth: false,
-              forVisitors: true },
+              forVisitors: true,
+              hideNavbar: true }
     },
     {
       path: '/login',
       component: Login,
       meta: { requiresAuth: false,
-              forVisitors: true },
+              forVisitors: true,
+              hideNavbar: true },
     },
     {
       path: '/register',

@@ -13,31 +13,29 @@
         <div class="row card-container">
             <div class="col-6 mb-4">
                 <div class="card">
-                   <img class="card-img-top" src="../assets/patient.png" alt="Card image cap">
+                   <img class="card-img-top" src="../assets/patient.png" alt="Patient cap">
                    <div class="card-body">
                       <h5 class="card-title">Patients</h5>
                       <p class="card-text">View and manage patients treated by specific drugs registered in this system.</p>
-                      <button href="#" class="btn btn-primary manage-btn">Manage</button>
+                      <button class="btn btn-primary manage-btn">Manage</button>
                    </div>
                 </div>
             </div>
             
             <div class="col-6 mb-4">
                 <div class="card">
-                   <img class="card-img-top" src="../assets/drug1.png" alt="Card image cap">
+                   <img class="card-img-top" src="../assets/drug1.png" alt="Drug cap">
                    <div class="card-body">
                       <h5 class="card-title">Drugs</h5>
                       <p class="card-text">View and manage different drug's types which are recommended by this system.</p>
-                      <button href="#" class="btn btn-primary manage-btn">Manage</button>
+                      <button class="btn btn-primary manage-btn">Manage</button>
                    </div>
                 </div>
             </div>
            <div>
         </div>
     </div>
-    </div>
-    
-        
+</div>      
 </template>
 
 <script lang="ts">
