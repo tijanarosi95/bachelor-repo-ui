@@ -17,7 +17,7 @@
                    <div class="card-body">
                       <h5 class="card-title">Patients</h5>
                       <p class="card-text">View and manage patients treated by specific drugs registered in this system.</p>
-                      <button class="btn btn-primary manage-btn">Manage</button>
+                      <button class="btn btn-primary manage-btn" @click="onPatientsClick">Manage</button>
                    </div>
                 </div>
             </div>
@@ -27,7 +27,7 @@
                    <img class="card-img-top" src="../assets/drug1.png" alt="Drug cap">
                    <div class="card-body">
                       <h5 class="card-title">Drugs</h5>
-                      <p class="card-text">View and manage different drug's types which are recommended by this system.</p>
+                      <p class="card-text">View and manage different drug's types which are registered in this system.</p>
                       <button class="btn btn-primary manage-btn">Manage</button>
                    </div>
                 </div>
@@ -59,8 +59,10 @@ export default defineComponent({
         this.lastName = response.data.lastName;
         this.role = response.data.userRole;
     },
-    get userLoaded() {
-        return this.firstName !== '' && this.lastName !== '';
+    methods: {
+        onPatientsClick(): void {
+            this.$router.push('/patients');
+        }
     }
 });
 
@@ -74,7 +76,7 @@ export default defineComponent({
 }
 
 .card-container {
-    padding: 30px;
+  padding: 30px;
 }
 
 .holder-profile-div {
