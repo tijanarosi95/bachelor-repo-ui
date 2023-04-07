@@ -5,7 +5,11 @@
                 <img class="patients-icon" src="../assets/patient.png">
                 <div class="d-flex flex-row patients-view-summary">
                     <div class="overview-text">Here you can see and manage patients</div>
-                    <button class="btn btn-primary add-patient-btn">Add patient</button>
+                    <button class="btn btn-primary add-patient-btn" 
+                            type="button"
+                            @click="onAddPatientClick" 
+                            data-bs-toggle="modal"
+                            data-bs-target="#exampleModal">Add patient</button>
                 </div>
             </div>
       </div>
@@ -32,16 +36,36 @@
           </tbody>
         </table>
       </div>
-      
+
+      <add-patient-dialog :visible="addPatientDialogVisible" 
+                          @close-add-patient-dialog="onAddPatientDialogClose">
+      </add-patient-dialog>
+
   </div>
 </template>
 
 <script lang="ts">
-import { defineComponent } from "vue";
+import { defineComponent, ref } from "vue";
+import AddPatientDialog from "./dialogs/AddPatientDialog.vue";
 
 export default defineComponent ({ 
     name: 'Patients',
-
+    components: {
+      AddPatientDialog
+    },
+    data() {
+      return {
+        addPatientDialogVisible: false
+      }
+    },
+    methods: {
+      onAddPatientClick(): void {
+        this.addPatientDialogVisible = true;
+      },
+      onAddPatientDialogClose(): void {
+        this.addPatientDialogVisible = false;
+      }
+    }
 });
 </script>
 

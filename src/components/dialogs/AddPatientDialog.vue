@@ -1,20 +1,30 @@
 <template>
-    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div v-if="dialogVisible" class="modal fade show" 
+        id="exampleModal"
+        role="dialog"
+        tabindex="-1" 
+        aria-labelledby="exampleModalLabel" 
+        aria-hidden="true" 
+        style="display:block">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel">New message</h5>
+                    <h5 class="modal-title" id="exampleModalLabel">Add patient</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" @click="onCloseDialog"></button>
                 </div>
                 <div class="modal-body">
                     <form>
                         <div class="mb-3">
-                            <label for="recipient-name" class="col-form-label">Recipient:</label>
-                            <input type="text" class="form-control" id="recipient-name">
+                            <label for="jmbg" class="col-form-label">JMBG</label>
+                            <input type="text" class="form-control" id="jmbg">
                         </div>
                         <div class="mb-3">
-                            <label for="message-text" class="col-form-label">Message:</label>
-                            <textarea class="form-control" id="message-text"></textarea>
+                            <label for="first-name" class="col-form-label">First name</label>
+                            <input type="text" class="form-control" id="first-name">
+                        </div>
+                        <div class="mb-3">
+                            <label for="last-name" class="col-form-label">Last name</label>
+                            <input type="text" class="form-control" id="last-name">
                         </div>
                     </form>
                 </div>
@@ -23,8 +33,8 @@
                     <button type="button" class="btn btn-primary">Send message</button>
                 </div>
             </div>
-        </div>
-    </div>
+          </div>
+       </div>
 </template>
 
 <script lang="ts">
@@ -43,6 +53,7 @@ export default defineComponent({
     methods: {
         onCloseDialog(): void {
             this.dialogVisible = false;
+            this.$emit('close-add-patient-dialog');
         }
     },
     watch: { 
@@ -55,4 +66,8 @@ export default defineComponent({
 
 </script>
 
-<style scoped></style>
+<style scoped>
+#exampleModal {
+  backdrop-filter: blur(2px);
+}
+</style>
