@@ -18,20 +18,26 @@
             <thead>
               <tr>
                <th scope="col">#</th>
-               <th scope="col">First</th>
-               <th scope="col">Last</th>
+               <th scope="col">First name</th>
+               <th scope="col">Last name</th>
                <th scope="col">JMBG</th>
                <th scope="col">Gender</th>
                <th scope="col"></th>
              </tr>
            </thead>
            <tbody>
-            <tr>
-              <th scope="row">1</th>
-              <td>Mark</td>
-              <td>Otto</td>
-              <td>@mdo</td>
-              <td></td>
+            <tr v-for="(item, index) in patients" :key="item.jmbg">
+              <th scope="row">{{ setColCounter(index) }}</th>
+              <td>{{ item.firstName }}</td>
+              <td>{{ item.lastName }}</td>
+              <td>{{ item.jmbg }}</td>
+              <td>{{ item.gender }}</td>
+              <td><button class="btn btn-primary patient-info-btn" 
+                            type="button"
+                            @click="onShowPatientInfo" 
+                            data-bs-toggle="modal"
+                            data-bs-target="#patientInfo">More</button>
+              </td>
             </tr>
           </tbody>
         </table>
@@ -47,6 +53,8 @@
 <script lang="ts">
 import { defineComponent, ref } from "vue";
 import AddPatientDialog from "./dialogs/AddPatientDialog.vue";
+import axios from "axios";
+import { mapGetters } from "vuex";
 
 export default defineComponent ({ 
     name: 'Patients',
@@ -55,16 +63,31 @@ export default defineComponent ({
     },
     data() {
       return {
-        addPatientDialogVisible: false
+        addPatientDialogVisible: false,
       }
     },
+    async created() {
+      axios.defaults.headers.common['Authorization'] = 'Bearer ' + localStorage.getItem('token');
+      const response = await axios.get('persons');
+      console.log('Response from GET /persons all: ', response);
+      this.$store.dispatch('patients', response.data);
+    },
     methods: {
+      setColCounter(index: number): number {
+        return index+=1;
+      },
       onAddPatientClick(): void {
         this.addPatientDialogVisible = true;
       },
       onAddPatientDialogClose(): void {
         this.addPatientDialogVisible = false;
+      },
+      onShowPatientInfo(): void {
+
       }
+    },
+    computed: {
+      ...mapGetters(['patients'])
     }
 });
 </script>

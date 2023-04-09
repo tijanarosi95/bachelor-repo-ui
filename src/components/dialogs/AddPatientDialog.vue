@@ -32,6 +32,12 @@
                                 <option v-for="option in genderOptions" :key="option.text" :value="option.value">{{ option.text }}</option>
                             </select>
                         </div>
+                        <div class="mb-3">
+                            <label for="lifeQuality" class="col-form-label">Life Quality</label>
+                            <select class="form-control" id="lifeQuality" v-model="lifeQuality">
+                                <option v-for="option in lifeQualityOptions" :key="option.text" :value="option.value">{{ option.text }}</option>
+                            </select>
+                        </div>
                         <div class="mb-3 form-check">
                             <label class="form-check-label" for="cancerSpread">Cancer spread</label>
                             <input class="form-check-input" type="checkbox" id="cancerSpread" v-model="cancerSpread">
@@ -60,12 +66,6 @@
                             <label class="form-check-label" for="cancerDetectable">Cancer detectable</label>
                             <input class="form-check-input" type="checkbox" id="cancerDetectable" v-model="cancerDetectable">
                         </div>
-                        <div class="mb-3">
-                            <label for="lifeQuality" class="col-form-label">Life Quality</label>
-                            <select class="form-control" id="lifeQuality" v-model="lifeQuality">
-                                <option v-for="option in lifeQualityOptions" :key="option.text" :value="option.value">{{ option.text }}</option>
-                            </select>
-                        </div>
                     </form>
                 </div>
                 <div class="modal-footer">
@@ -80,7 +80,9 @@
 <script lang="ts">
 import { Gender } from "@/models/Gender";
 import { LifeQuality } from "@/models/LifeQuality";
+import { Patient } from "@/models/Patient";
 import { defineComponent } from "vue";
+import axios from "axios";
 
 export default defineComponent({ 
     name: 'AddPatientDialog',
@@ -114,12 +116,33 @@ export default defineComponent({
             this.dialogVisible = false;
             this.$emit('close-add-patient-dialog');
         },
-        onAddPatientClick(): void {
-            
+        async onAddPatientClick() {
+            const patient: Patient = {
+                jmbg: this.jmbg,
+                firstName: this.firstName,
+                lastName: this.lastName,
+                gender: this.gender,
+                isCancerSpread: this.cancerSpread,
+                isCancerGrown: this.cancerGrown,
+                isCancerReappear: this.cancerReappeared,
+                isCancerSpreadToOrgans: this.cancerSpreadToOrgans,
+                isCanecerDetectable: this.cancerDetectable,
+                weightLoss: this.weightLoss,
+                strongPain: this.strongPain,
+                lifeQuality: this.lifeQuality
+            }
+            axios.defaults.headers.common['Authorization'] = 'Bearer ' + localStorage.getItem('token');
+            axios.post('persons', patient)
+            .then((response) => {
+                console.log('Response from POST /persons ', response.data);
+            }).catch((error) => {
+                console.log('Error has happened ', error.data);
+            });
+
         }
     },
     watch: { 
-      visible: function(newVal, oldVal) { // watch it
+      visible: function visible (newVal, oldVal) { // watch it
         this.dialogVisible = newVal;
         console.log('new' + newVal + '==' + oldVal);
       }

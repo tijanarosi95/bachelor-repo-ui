@@ -6,6 +6,5 @@ import store from './vuex';
 
 const app = createApp(App);
 
-app.use(router)
-app.use(store)
-app.mount('#app')
+app.config.globalProperties.$store = store;
+app.use(router).mount('#app')
