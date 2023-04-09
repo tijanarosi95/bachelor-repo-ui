@@ -13,18 +13,58 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" @click="onCloseDialog"></button>
                 </div>
                 <div class="modal-body">
-                    <form>
+                    <form @submit.prevent="onAddPatientClick">
                         <div class="mb-3">
                             <label for="jmbg" class="col-form-label">JMBG</label>
-                            <input type="text" class="form-control" id="jmbg">
+                            <input type="text" class="form-control" id="jmbg" v-model="jmbg">
                         </div>
                         <div class="mb-3">
                             <label for="first-name" class="col-form-label">First name</label>
-                            <input type="text" class="form-control" id="first-name">
+                            <input type="text" class="form-control" id="first-name" v-model="firstName">
                         </div>
                         <div class="mb-3">
                             <label for="last-name" class="col-form-label">Last name</label>
-                            <input type="text" class="form-control" id="last-name">
+                            <input type="text" class="form-control" id="last-name" v-model="lastName">
+                        </div>
+                        <div class="mb-3">
+                            <label for="gender" class="col-form-label">Gender</label>
+                            <select class="form-control" id="gender" v-model="gender">
+                                <option v-for="option in genderOptions" :key="option.text" :value="option.value">{{ option.text }}</option>
+                            </select>
+                        </div>
+                        <div class="mb-3 form-check">
+                            <label class="form-check-label" for="cancerSpread">Cancer spread</label>
+                            <input class="form-check-input" type="checkbox" id="cancerSpread" v-model="cancerSpread">
+                        </div>
+                        <div class="mb-3 form-check">
+                            <label class="form-check-label" for="cancerGrown">Cancer grown</label>
+                            <input class="form-check-input" type="checkbox" id="cancerGrown" v-model="cancerGrown">
+                        </div>
+                        <div class="mb-3 form-check">
+                            <label class="form-check-label" for="cancerSpreadToOrgans">Cancer spread to organs</label>
+                            <input class="form-check-input" type="checkbox" id="cancerSpreadToOrgans" v-model="cancerSpreadToOrgans">
+                        </div>
+                        <div class="mb-3 form-check">
+                            <label class="form-check-label" for="strongPain">Strong pain</label>
+                            <input class="form-check-input" type="checkbox" id="strongPain" v-model="strongPain">
+                        </div>
+                        <div class="mb-3 form-check">
+                            <label class="form-check-label" for="cancerReappeared">Cancer reappeared</label>
+                            <input class="form-check-input" type="checkbox" id="cancerReappeared" v-model="cancerReappeared">
+                        </div>
+                        <div class="mb-3 form-check">
+                            <label class="form-check-label" for="weightLoss">Weight loss</label>
+                            <input class="form-check-input" type="checkbox" id="weightLoss" v-model="weightLoss">
+                        </div>
+                        <div class="mb-3 form-check">
+                            <label class="form-check-label" for="cancerDetectable">Cancer detectable</label>
+                            <input class="form-check-input" type="checkbox" id="cancerDetectable" v-model="cancerDetectable">
+                        </div>
+                        <div class="mb-3">
+                            <label for="lifeQuality" class="col-form-label">Life Quality</label>
+                            <select class="form-control" id="lifeQuality" v-model="lifeQuality">
+                                <option v-for="option in lifeQualityOptions" :key="option.text" :value="option.value">{{ option.text }}</option>
+                            </select>
                         </div>
                     </form>
                 </div>
@@ -38,6 +78,8 @@
 </template>
 
 <script lang="ts">
+import { Gender } from "@/models/Gender";
+import { LifeQuality } from "@/models/LifeQuality";
 import { defineComponent } from "vue";
 
 export default defineComponent({ 
@@ -47,13 +89,33 @@ export default defineComponent({
     },
     data() {
         return {
-            dialogVisible: this.visible
+            dialogVisible: this.visible,
+            firstName: '',
+            lastName: '',
+            jmbg: '',
+            gender: Gender.FEMALE,
+            genderOptions: [ { text: 'Male', value: Gender.MALE }, 
+                              { text: 'Female', value: Gender.FEMALE } ],
+            cancerSpread: false,
+            cancerGrown: false,
+            cancerSpreadToOrgans: false,
+            strongPain: false,
+            cancerReappeared: false,
+            weightLoss: false,
+            cancerDetectable: false,
+            lifeQuality: LifeQuality.SAME,
+            lifeQualityOptions: [ { text: 'Same', value: LifeQuality.SAME },
+                                  { text: 'MuchBetter', value: LifeQuality.MUCH_BETTER },
+                                  { text: 'Worse', value: LifeQuality.WORSE } ]                  
         }
     },
     methods: {
         onCloseDialog(): void {
             this.dialogVisible = false;
             this.$emit('close-add-patient-dialog');
+        },
+        onAddPatientClick(): void {
+            
         }
     },
     watch: { 
