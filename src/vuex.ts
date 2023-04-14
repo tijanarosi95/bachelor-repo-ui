@@ -18,6 +18,9 @@ const store = new Vuex.Store({
         },
         createPatient(context, patient: Patient) {
             context.commit('addPatient', patient);
+        },
+        deletePatient(context, patientJmbg: string) {
+            context.commit('removePatient', patientJmbg);
         }
     },
     mutations: {
@@ -26,6 +29,9 @@ const store = new Vuex.Store({
         },
         addPatient(state, patient: Patient) {
             state.patients.push(patient);
+        },
+        removePatient(state, patientJmbg: string) {
+            state.patients = state.patients.filter(patient => patient.jmbg !== patientJmbg);
         }
     }
 });

@@ -5,6 +5,7 @@ export interface Patient {
     jmbg: string,
     firstName: string,
     lastName: string,
+    age: number,
     gender: Gender,
     isCancerSpread: boolean,
     isCancerGrown: boolean,

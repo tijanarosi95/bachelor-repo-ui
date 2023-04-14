@@ -27,6 +27,10 @@
                             <input type="text" class="form-control" id="last-name" v-model="lastName">
                         </div>
                         <div class="mb-3">
+                            <label for="age" class="col-form-label">Age</label>
+                            <input type="number" class="form-control" id="age" v-model="age">
+                        </div>
+                        <div class="mb-3">
                             <label for="gender" class="col-form-label">Gender</label>
                             <select class="form-control" id="gender" v-model="gender">
                                 <option v-for="option in genderOptions" :key="option.text" :value="option.value">{{ option.text }}</option>
@@ -69,8 +73,8 @@
                     </form>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" @click="onCloseDialog">Close</button>
-                    <button type="button" class="btn btn-primary">Send message</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" @click="onCloseDialog">Cancel</button>
+                    <button type="button" class="btn btn-primary" @click="onAddPatientSubmit">Add</button>
                 </div>
             </div>
           </div>
@@ -95,6 +99,7 @@ export default defineComponent({
             firstName: '',
             lastName: '',
             jmbg: '',
+            age: 0,
             gender: Gender.FEMALE,
             genderOptions: [ { text: 'Male', value: Gender.MALE }, 
                               { text: 'Female', value: Gender.FEMALE } ],
@@ -116,11 +121,12 @@ export default defineComponent({
             this.dialogVisible = false;
             this.$emit('close-add-patient-dialog');
         },
-        async onAddPatientClick() {
+        async onAddPatientSubmit() {
             const patient: Patient = {
                 jmbg: this.jmbg,
                 firstName: this.firstName,
                 lastName: this.lastName,
+                age: this.age,
                 gender: this.gender,
                 isCancerSpread: this.cancerSpread,
                 isCancerGrown: this.cancerGrown,
@@ -135,6 +141,8 @@ export default defineComponent({
             axios.post('persons', patient)
             .then((response) => {
                 console.log('Response from POST /persons ', response.data);
+                this.$store.dispatch('createPatient', patient);
+                this.dialogVisible = false;
             }).catch((error) => {
                 console.log('Error has happened ', error.data);
             });
