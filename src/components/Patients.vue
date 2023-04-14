@@ -37,9 +37,7 @@
               <td>{{ item.age }}</td>
               <td><button class="btn btn-secondary patient-info-btn" 
                             type="button"
-                            @click="onShowPatientInfo" 
-                            data-bs-toggle="modal"
-                            data-bs-target="#patientInfo">See more info</button>
+                            @click="onShowPatientInfo(item.jmbg)">See more info</button>
               </td>
               <td><button class="btn btn-danger patient-delete-btn" 
                             type="button"
@@ -113,8 +111,8 @@ export default defineComponent ({
       onDeletePatientDialogClose(): void {
         this.deletePatientDialogVisible = false;
       },
-      onShowPatientInfo(): void {
-
+      onShowPatientInfo(jmbg: string): void {
+        this.$router.push('/patients/' + jmbg);
       }
     },
     computed: {

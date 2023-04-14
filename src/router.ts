@@ -3,6 +3,7 @@ import Login from '@/components/Login.vue';
 import Register from '@/components/Register.vue';
 import Profile from '@/components/Profile.vue';
 import Patients from '@/components/Patients.vue';
+import Patient from '@/components/Patient.vue';
 
 export default createRouter({
   history: createWebHistory(),
@@ -35,6 +36,10 @@ export default createRouter({
     {
       path: '/patients',
       component: Patients
+    },
+    {
+      path: '/patients/:jmbg',
+      component: Patient
     }
   ],
 })
