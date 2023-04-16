@@ -17,7 +17,7 @@
         <div class="d-flex flex-row patient-symptoms-main-card">
             <div class="col section-card">
                 <div class="row custom-style-row">
-                    <div class="section-title title-font-style">Cancer symptoms</div>
+                        <div class="section-title title-font-style">Cancer symptoms</div>
                 
                         <div class="row section-row">
                             <div class="col-1">
@@ -78,62 +78,112 @@
                             </div>
                             <div class="col-11">Cancer has reappeared</div>
                         </div>
-                    </div>
                 </div>
-           <div>
-    </div>
-
+        </div>
+           
 
     <div class="col section-card">
-        <div class="section-title title-font-style">Life quality</div>
+        <div class="row custom-style-row">
 
-        <div class="row section-row">
+            <div class="section-title title-font-style">Life quality</div>
+
+            <div class="row section-row">
+                <div class="col-1">
+                    <span v-if="strongPain">
+                        <i class="fa-solid fa-check"></i>
+                    </span>
+                    <span v-else>
+                        <i class="fa-regular fa-x"></i>
+                    </span>
+                </div>
+                <div class="col-11">Has strong pain</div>
+            </div>
+
+            <div class="row section-row">
+                <div class="col-1">
+                    <span v-if="weightLoss">
+                        <i class="fa-solid fa-check"></i>
+                    </span>
+                    <span v-else>
+                        <i class="fa-regular fa-x"></i>
+                    </span>
+                </div>
+                <div class="col-11">Has weight loss</div>
+            </div>
+
+            <div class="row section-row">
+                <div class="col-1">
+                    <span v-if="lifeQuality">
+                        <i class="fa-solid fa-check"></i>
+                    </span>
+                </div>
+                <div class="col-11">Has {{ getLifeQualityDescription() }} life quality</div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+    <div class="d-flex flex-row patient-symptoms-main-card">
+        <div class="col section-card">
+            <div class="row custom-style-row">
+                <div class="section-title title-font-style">Treatment info</div>
+
+            </div>
+        </div>
+
+        <div class="col section-card">
+            <div class="row custom-style-row">
+                <div class="row disease-section-title title-font-style">
+                    <div class="col-8">Disease info</div>
+                    <div class="col-4 manage-disease">
+                        <button class="btn btn-primary btn-sm manage-disease" @click="onPatientDiseaseDialogOpen">Manage</button>
+                    </div>
+                </div>
+                
+
+                <div class="row section-row">
                     <div class="col-1">
-                        <span v-if="strongPain">
+                        <span v-if="hasDisease.name !== ''">
                             <i class="fa-solid fa-check"></i>
                         </span>
                         <span v-else>
                             <i class="fa-regular fa-x"></i>
                         </span>
                     </div>
-                    <div class="col-11">Has strong pain</div>
-        </div>
-
-        <div class="row section-row">
-                    <div class="col-1">
-                        <span v-if="weightLoss">
-                            <i class="fa-solid fa-check"></i>
-                        </span>
-                        <span v-else>
-                            <i class="fa-regular fa-x"></i>
-                        </span>
-                    </div>
-                    <div class="col-11">Has weight loss</div>
-        </div>
-
-        <div class="row section-row">
-                    <div class="col-1">
-                        <span v-if="lifeQuality">
-                            <i class="fa-solid fa-check"></i>
-                        </span>
-                    </div>
-                    <div class="col-11">Has {{ getLifeQualityDescription() }} life quality</div>
+                    <div v-if="hasDisease.name !== ''" class="col-11">Has disease {{ this.hasDisease.name }}</div>
+                    <div v-else class="col-11">Disease is not added. Click Manage to add it.</div>
+                </div>
+            </div>    
         </div>
     </div>
-    </div>
 
-    </div>
+    <add-patient-disease-dialog :visible="addPatientDiseaseDialogVisible"
+                                :jmbg="jmbg"
+                                :firstName="firstName"
+                                :lastName="lastName"
+                                @close-add-patient-disease-dialog="onPatientDiseaseDialogClose"
+                                @add-patient-disease="onPatientDiseaseAdded">
+    </add-patient-disease-dialog>
+
+</div>
 </template>
 <script lang="ts">
+import { Disease } from "@/models/Disease";
 import { Gender } from "@/models/Gender";
 import { LifeQuality } from "@/models/LifeQuality";
 import axios from "axios";
 import { defineComponent } from "vue";
+import AddPatientDiseaseDialog from "./dialogs/AddPatientDiseaseDialog.vue";
 
 export default defineComponent({ 
     name: 'Patient',
+    components: {
+        AddPatientDiseaseDialog
+    },
     data() {
         return {
+            addPatientDiseaseDialogVisible: false,
             jmbg: '',
             firstName: '',
             lastName: '',
@@ -147,6 +197,7 @@ export default defineComponent({
             weightLoss: false,
             cancerDetectable: false,
             lifeQuality: LifeQuality.SAME,
+            hasDisease: { name: '', id: 0} as Disease
         }
     },
     async created() {
@@ -172,13 +223,36 @@ export default defineComponent({
         .catch((error) => {
             console.log("Error happened ", error.data);
         });
-        
+
+        await axios.get('/diseases/person-disease/' + this.jmbg)
+        .then((response) => {
+            console.log('Response from person-disease ', response);
+            if (Object.keys(response.data.disease).length > 0) {
+                this.hasDisease = {
+                    id: 0,
+                    name: response.data.disease.name
+                } as Disease;
+            }  
+        })
+         .catch((error) => {
+            console.log("Error happened ", error.data);
+        });
     },
     methods: {
         getLifeQualityDescription(): string | undefined {
             if (this.lifeQuality === LifeQuality.SAME) return 'the same';
             if (this.lifeQuality === LifeQuality.WORSE) return 'the worse';
             if (this.lifeQuality === LifeQuality.MUCH_BETTER) return 'much better';
+        },
+        onPatientDiseaseDialogOpen(): void {
+            this.addPatientDiseaseDialogVisible = true;
+        },
+        onPatientDiseaseDialogClose(): void {
+            this.addPatientDiseaseDialogVisible = false;
+        },
+        onPatientDiseaseAdded(id?: number, name?: string): void {
+            this.hasDisease.id = id;
+            this.hasDisease.name = name;
         }
     }
 
@@ -239,6 +313,16 @@ export default defineComponent({
 .custom-style-row {
     padding-left: 10px;
     padding-bottom: 10px;
+}
+
+.manage-disease {
+    text-align: end;
+}
+
+.disease-section-title {
+    padding-left: 20px;
+    padding-right: 10px;
+    padding-top: 20px;
 }
 
 </style>

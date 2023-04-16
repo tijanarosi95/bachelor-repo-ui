@@ -132,7 +132,7 @@ export default defineComponent({
                 isCancerGrown: this.cancerGrown,
                 isCancerReappear: this.cancerReappeared,
                 isCancerSpreadToOrgans: this.cancerSpreadToOrgans,
-                isCanecerDetectable: this.cancerDetectable,
+                isCancerDetectable: this.cancerDetectable,
                 weightLoss: this.weightLoss,
                 strongPain: this.strongPain,
                 lifeQuality: this.lifeQuality
