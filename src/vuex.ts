@@ -1,8 +1,12 @@
 import Vuex from 'vuex';
+import { Drug } from './models/Drug';
+import { DrugInferredData } from './models/DrugInferredData';
 import { Patient } from './models/Patient';
 
 const state = {
-    patients: new Array<Patient>()
+    patients: new Array<Patient>(),
+    drugs: new Array<Drug>(),
+    inferredDrugs: new Array<DrugInferredData>()
 }
 
 const store = new Vuex.Store({ 
@@ -10,6 +14,12 @@ const store = new Vuex.Store({
     getters: {
         patients: (state) => {
             return state.patients;
+        },
+        drugs: (state) => {
+            return state.drugs;
+        },
+        inferredDrugs: (state) => {
+            return state.inferredDrugs;
         }
     },
     actions: {
@@ -21,6 +31,12 @@ const store = new Vuex.Store({
         },
         deletePatient(context, patientJmbg: string) {
             context.commit('removePatient', patientJmbg);
+        },
+        drugs(context, drugs: Drug[]) {
+            context.commit('drugs', drugs);
+        },
+        inferredDrugs(context, drugs: DrugInferredData[]) {
+            context.commit('inferredDrugs', drugs);
         }
     },
     mutations: {
@@ -32,6 +48,12 @@ const store = new Vuex.Store({
         },
         removePatient(state, patientJmbg: string) {
             state.patients = state.patients.filter(patient => patient.jmbg !== patientJmbg);
+        },
+        drugs(state, drugs: Drug[]) {
+            state.drugs = drugs;
+        },
+        inferredDrugs(state, drugs: DrugInferredData[]) {
+            state.inferredDrugs = drugs;
         }
     }
 });

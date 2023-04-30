@@ -127,8 +127,12 @@
     <div class="d-flex flex-row patient-symptoms-main-card">
         <div class="col section-card">
             <div class="row custom-style-row">
-                <div class="section-title title-font-style">Treatment info</div>
-
+                <div class="row section-title title-font-style">
+                    <div class="col-8">Treatment info</div>
+                    <div class="col-4 manage-disease">
+                        <button class="btn btn-primary btn-sm manage-drug" @click="onPatientTreatedDrugDialogOpen">Manage</button>
+                    </div>
+                </div>
             </div>
         </div>
 
@@ -154,7 +158,36 @@
                     <div v-if="hasDisease.name !== ''" class="col-11">Has disease {{ this.hasDisease.name }}</div>
                     <div v-else class="col-11">Disease is not added. Click Manage to add it.</div>
                 </div>
-            </div>    
+
+                <div class="row section-row" v-if="hasDisease.name !== ''">
+                    <div class="col-1">
+                        <span v-if="symptoms.type !== ''">
+                            <i class="fa-solid fa-check"></i>
+                        </span>
+                    </div>
+                    <div v-if="symptoms.type !== ''" class="col-11">Has symptoms {{ this.symptoms.type }}</div>
+                </div>
+
+                 <div class="row section-row" v-if="hasDisease.name !== ''">
+                    <div class="col-1">
+                        <span v-if="diseaseCourse.type !== ''">
+                            <i class="fa-solid fa-check"></i>
+                        </span>
+                    </div>
+                    <div v-if="diseaseCourse.type !== ''" class="col-11">Has disease course {{ this.diseaseCourse.type }}</div>
+                </div>
+
+                 <div class="row section-row" v-if="hasDisease.name !== ''">
+                    <div class="col-1">
+                        <span v-if="diagnosis.type !== ''">
+                            <i class="fa-solid fa-check"></i>
+                        </span>
+                    </div>
+                    <div v-if="diagnosis.type !== ''" class="col-11">Has diagnosis {{ this.diagnosis.type }}</div>
+                </div>
+
+            </div>
+
         </div>
     </div>
 
@@ -166,24 +199,38 @@
                                 @add-patient-disease="onPatientDiseaseAdded">
     </add-patient-disease-dialog>
 
+    <add-patient-treated-drug :visible="addPatientTreatedDrugDialogVisible"
+                              @close-add-patient-drug-dialog="onPatientTreatedDrugDialogClose">
+    </add-patient-treated-drug>
+
 </div>
 </template>
 <script lang="ts">
 import { Disease } from "@/models/Disease";
+import { DiseaseCourse } from "@/models/DiseaseCourse";
+import { DiseaseDiagnosis } from "@/models/DiseaseDiagnosis";
+import { DiseaseSymptom } from "@/models/DiseaseSymptom";
 import { Gender } from "@/models/Gender";
 import { LifeQuality } from "@/models/LifeQuality";
+import { Patient } from "@/models/Patient";
+import { PatientDiagnosis } from "@/models/PatientDiagnosis";
+import { PatientDiseaseCourse } from "@/models/PatientDiseaseCourse";
+import { PatientSymptom } from "@/models/PatientSymptom";
 import axios from "axios";
 import { defineComponent } from "vue";
 import AddPatientDiseaseDialog from "./dialogs/AddPatientDiseaseDialog.vue";
+import AddPatientTreatedDrug from "./dialogs/AddPatientTreatedDrug.vue";
 
 export default defineComponent({ 
     name: 'Patient',
     components: {
-        AddPatientDiseaseDialog
+        AddPatientDiseaseDialog,
+        AddPatientTreatedDrug
     },
     data() {
         return {
             addPatientDiseaseDialogVisible: false,
+            addPatientTreatedDrugDialogVisible: false,
             jmbg: '',
             firstName: '',
             lastName: '',
@@ -197,7 +244,11 @@ export default defineComponent({
             weightLoss: false,
             cancerDetectable: false,
             lifeQuality: LifeQuality.SAME,
-            hasDisease: { name: '', id: 0} as Disease
+            hasDisease: { name: '', id: 0} as Disease,
+            person: {} as Patient,
+            diseaseCourse: { type: DiseaseCourse.DEFAULT, isCancerDetectable: false, isCancerReappear: false } as PatientDiseaseCourse,
+            diagnosis: { type: DiseaseDiagnosis.DEFAULT, isCancerSpread: false, isCancerGrown: false, isCancerSpreadToOrgans: false } as PatientDiagnosis,
+            symptoms: { type: DiseaseSymptom.DEFAULT, strongPain: false, weightLoss: false, lifeQuality: LifeQuality.SAME } as PatientSymptom
         }
     },
     async created() {
@@ -206,6 +257,7 @@ export default defineComponent({
         await axios.get('persons/' + jmbg)
         .then((response) => {
             console.log('Response: ', response);
+            this.person = response.data;
             this.jmbg = response.data.jmbg;
             this.firstName = response.data.firstName;
             this.lastName = response.data.lastName;
@@ -232,9 +284,9 @@ export default defineComponent({
                     id: 0,
                     name: response.data.disease.name
                 } as Disease;
-            }  
+            }
         })
-         .catch((error) => {
+        .catch((error) => {
             console.log("Error happened ", error.data);
         });
     },
@@ -250,9 +302,28 @@ export default defineComponent({
         onPatientDiseaseDialogClose(): void {
             this.addPatientDiseaseDialogVisible = false;
         },
+        onPatientTreatedDrugDialogOpen(): void {
+            this.addPatientTreatedDrugDialogVisible = true;
+        },
+        onPatientTreatedDrugDialogClose(): void {
+            this.addPatientTreatedDrugDialogVisible = false;
+        },
         onPatientDiseaseAdded(id?: number, name?: string): void {
             this.hasDisease.id = id;
             this.hasDisease.name = name;
+            this.getPatientInferredFacts();
+        },
+        async getPatientInferredFacts() {
+            await axios.post('/persons/infer-facts', { ...this.person, hasDisease: this.hasDisease})
+            .then((response) => {
+                console.log('Response from persons/infer-facts ', response);
+                this.diseaseCourse = response.data.diseaseCourse;
+                this.symptoms = response.data.symptoms;
+                this.diagnosis = response.data.diagnosis;
+            })
+            .catch((error) => {
+                console.log("Error happened ", error.data);
+            });
         }
     }
 
