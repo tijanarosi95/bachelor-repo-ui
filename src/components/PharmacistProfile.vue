@@ -1,5 +1,5 @@
 <template>
-    <div class="container profile-container">
+<div class="container profile-container">
         <div class="d-flex flex-column bd-highlight holder-profile-div">
             <div class="d-flex flex-row">
                 <img class="profile-icon" src="../assets/user.png">
@@ -16,8 +16,8 @@
                    <img class="card-img-top" src="../assets/patient.png" alt="Patient cap">
                    <div class="card-body">
                       <h5 class="card-title">Patients</h5>
-                      <p class="card-text">View and manage patients treated by specific drugs registered in this system.</p>
-                      <button class="btn btn-primary manage-btn" @click="onPatientsClick">Manage</button>
+                      <p class="card-text">View patients treated by specific drugs registered in this system.</p>
+                      <button class="btn btn-primary manage-btn" @click="onPatientsClick">View</button>
                    </div>
                 </div>
             </div>
@@ -27,8 +27,8 @@
                    <img class="card-img-top" src="../assets/drug1.png" alt="Drug cap">
                    <div class="card-body">
                       <h5 class="card-title">Drugs</h5>
-                      <p class="card-text">View and manage different drug's types which are registered in this system.</p>
-                      <button class="btn btn-primary manage-btn">Manage</button>
+                      <p class="card-text">View and manage different drug's types registered in this system.</p>
+                      <button class="btn btn-primary manage-btn" @click="onDrugsClick">Manage</button>
                    </div>
                 </div>
             </div>
@@ -36,14 +36,15 @@
         </div>
     </div>
 </div>      
+
 </template>
 
 <script lang="ts">
-import axios from "axios";
 import { defineComponent } from "vue";
+import axios from "axios";
 
-export default defineComponent({
-    name: 'Profile',
+export default defineComponent({ 
+    name: 'PharmacistProfile',
     data() {
         return {
             firstName: '',
@@ -61,59 +62,11 @@ export default defineComponent({
     },
     methods: {
         onPatientsClick(): void {
-            this.$router.push('/patients');
+            this.$router.push('');
+        },
+        onDrugsClick(): void {
+            this.$router.push('/pharmacist-view-drugs');
         }
     }
 });
-
 </script>
-
-<style>
-.profile-container {
-  margin-top: 50px;
-  width: fit-content;
-  background-color: white;
-}
-
-.card-container {
-  padding: 30px;
-}
-
-.holder-profile-div {
-  padding: 50px;
-}
-
-.profile-name-font-style {
-  padding: 10px;
-  font-size: 30px;
-}
-
-.profile-role-font-style {
-  padding-left: 10px;
-  font-size: 20px;
-}
-
-.profile-icon {
-  width: 100px;
-  height: 100px;
-}
-
-.card-img-top {
-  display: block;
-  margin-left: auto;
-  margin-right: auto;
-}
-
-.card-body, .card-img-top {
-    padding: 15px;
-}
-
-.card {
-    width: 20rem;
-}
-
-.manage-btn {
-    width: 100%;
-}
-
-</style>

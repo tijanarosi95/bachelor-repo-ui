@@ -26,6 +26,7 @@
 </template>
 
 <script lang="ts">
+import { UserRole } from "@/models/UserRole";
 import axios from "axios";
 import { defineComponent } from "vue";
 import { JwtResponse } from '../models/JwtResponse';
@@ -47,11 +48,13 @@ export default defineComponent({
             }
             delete axios.defaults.headers.common["Authorization"];
             const response = await axios.post('login', loginData);
-
-            const jwtResponse: JwtResponse = { jwt: response.data.jwt }; 
+            const jwtResponse: JwtResponse = { jwt: response.data.jwt, role: response.data.role }; 
             localStorage.setItem('token', jwtResponse.jwt);
 
-            this.$router.push('/profile')
+            if (jwtResponse.role === UserRole.DOCTOR) {
+                console.log('Doctor logged in! ');
+                this.$router.push('/doctor-profile')
+            }
         }
     }
 });

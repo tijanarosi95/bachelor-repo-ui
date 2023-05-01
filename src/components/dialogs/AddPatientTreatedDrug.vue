@@ -14,6 +14,7 @@
                 </div>
                 <div class="modal-body">
                   <form>
+                    <div v-if="selectedDrugName !== ''" class="selected-row-info">You selected {{ selectedDrugName }}</div>
                   <div class="container add-treated-drug-container">
                     <div class="drugs-table">
                       <table class="table">
@@ -27,6 +28,7 @@
                             <th scope="col">Phase 2 clinical tested</th>
                             <th scope="col">Phase 3 clinical tested</th>
                             <th scope="col">Approved</th>
+                            <th scope="col"></th>
                           </tr>
                         </thead>
                       <tbody>
@@ -40,7 +42,7 @@
                             <td>{{ isClinicalPhase3Tested(item) }}</td>
                             <td>{{ isApproved(item) }}</td>
                             <td><button class="btn btn-secondary select-drug" 
-                                        type="button">Select</button>
+                                        type="button" @click="onRowSelected(item)">Select</button>
                             </td>
                         </tr>
                       </tbody>
@@ -73,6 +75,7 @@ export default defineComponent({
     data() {
         return {
             dialogVisible: this.visible,
+            selectedDrugName: ''
         }
     },
     async created() {
@@ -108,6 +111,9 @@ export default defineComponent({
         isApproved(inferredData?: DrugInferredData): string {
             const approvedFacts = inferredData ? inferredData.approvedDrug : null;
             return approvedFacts !== null ? 'Yes' : 'No';
+        },
+        onRowSelected(inferredData?: DrugInferredData): void {
+          this.selectedDrugName = (inferredData !== undefined && inferredData.drugName !== undefined) ? inferredData.drugName : '';
         }
     },
     computed: {

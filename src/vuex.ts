@@ -6,7 +6,8 @@ import { Patient } from './models/Patient';
 const state = {
     patients: new Array<Patient>(),
     drugs: new Array<Drug>(),
-    inferredDrugs: new Array<DrugInferredData>()
+    inferredDrugs: new Array<DrugInferredData>(),
+    filteredInferredDrugs: new Array<DrugInferredData>()
 }
 
 const store = new Vuex.Store({ 
@@ -20,6 +21,9 @@ const store = new Vuex.Store({
         },
         inferredDrugs: (state) => {
             return state.inferredDrugs;
+        },
+        filteredInferredDrugs: (state) => {
+            return state.filteredInferredDrugs;
         }
     },
     actions: {
@@ -37,6 +41,9 @@ const store = new Vuex.Store({
         },
         inferredDrugs(context, drugs: DrugInferredData[]) {
             context.commit('inferredDrugs', drugs);
+        },
+        filterInferredDrugs(context, drugName: string) {
+            context.commit('filterInferredDrugs', drugName);
         }
     },
     mutations: {
@@ -54,6 +61,10 @@ const store = new Vuex.Store({
         },
         inferredDrugs(state, drugs: DrugInferredData[]) {
             state.inferredDrugs = drugs;
+        },
+        filterInferredDrugs(state, drugName: string) {
+            state.filteredInferredDrugs = [...state.inferredDrugs];
+            drugName === '' ? state.filteredInferredDrugs : state.filteredInferredDrugs.filter(drug => drug.drugName?.includes(drugName));
         }
     }
 });
