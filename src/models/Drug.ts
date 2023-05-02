@@ -1,3 +1,5 @@
+import { Disease } from "./Disease";
+
 export interface Drug {
     drugId?: string,
     name?: string,
@@ -7,5 +9,6 @@ export interface Drug {
     hasToxicity?: boolean,
     hasSideEffects?: boolean
     hasTherapeuticEffect?: boolean,
-    isApproved?: boolean
+    isApproved?: boolean,
+    mayTreat?: Disease[]
 }

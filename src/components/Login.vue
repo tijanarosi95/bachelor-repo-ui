@@ -55,6 +55,10 @@ export default defineComponent({
                 console.log('Doctor logged in! ');
                 this.$router.push('/doctor-profile')
             }
+            if (jwtResponse.role === UserRole.PHARMACIST) {
+                console.log('Pharmacist logged in! ');
+                this.$router.push('/pharmacist-profile');
+            }
         }
     }
 });

@@ -39,6 +39,12 @@ const store = new Vuex.Store({
         drugs(context, drugs: Drug[]) {
             context.commit('drugs', drugs);
         },
+        createDrug(context, drug: Drug) {
+            context.commit('addDrug', drug);
+        },
+        deleteDrug(context, drugId: string) {
+            context.commit('removeDrug', drugId);
+        },
         inferredDrugs(context, drugs: DrugInferredData[]) {
             context.commit('inferredDrugs', drugs);
         },
@@ -58,6 +64,12 @@ const store = new Vuex.Store({
         },
         drugs(state, drugs: Drug[]) {
             state.drugs = drugs;
+        },
+        addDrug(state, drug: Drug) {
+            state.drugs.push(drug);
+        },
+        removeDrug(state, drugId: string) {
+            state.drugs = state.drugs.filter(drug => drug.drugId !== drugId);
         },
         inferredDrugs(state, drugs: DrugInferredData[]) {
             state.inferredDrugs = drugs;

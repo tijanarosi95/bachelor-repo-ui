@@ -2,6 +2,7 @@ import { createRouter, createWebHistory } from 'vue-router';
 import Login from '@/components/Login.vue';
 import Register from '@/components/Register.vue';
 import DoctorProfile from '@/components/DoctorProfile.vue';
+import PharmacistProfile from '@/components/PharmacistProfile.vue';
 import DrugsViewDoctor from '@/components/DrugsViewDoctor.vue';
 import DrugsViewPharmacist from '@/components/DrugsViewPharmacist.vue';
 import Patients from '@/components/Patients.vue';
@@ -34,6 +35,10 @@ export default createRouter({
     {
       path: '/doctor-profile',
       component: DoctorProfile
+    },
+    {
+      path: '/pharmacist-profile',
+      component: PharmacistProfile
     },
     {
       path: '/patients',
