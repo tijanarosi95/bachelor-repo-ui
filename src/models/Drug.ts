@@ -1,7 +1,7 @@
 import { Disease } from "./Disease";
 
 export interface Drug {
-    drugId?: string,
+    drugId?: number,
     name?: string,
     activeIngredient?: string,
     isDoseRanged?: boolean,

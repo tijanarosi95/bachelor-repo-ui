@@ -42,7 +42,7 @@
 
               <td><button class="btn btn-secondary drug-info-btn" 
                             type="button"
-                            >See more info</button>
+                            @click="onShowDrugInfo(item.drugId)">See more info</button>
               </td>
               <td><button class="btn btn-danger drug-delete-btn" 
                             type="button"
@@ -113,6 +113,9 @@ export default defineComponent({
         onDeleteDrugDialogClose(): void {
             this.deleteDrugDialogVisible = false;
         },
+        onShowDrugInfo(drugId?: number): void {
+            this.$router.push('/drugs/' + drugId);
+        }
     },
     computed: {
       ...mapGetters(['drugs'])

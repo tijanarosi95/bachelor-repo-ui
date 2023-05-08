@@ -7,6 +7,7 @@ import DrugsViewDoctor from '@/components/DrugsViewDoctor.vue';
 import DrugsViewPharmacist from '@/components/DrugsViewPharmacist.vue';
 import Patients from '@/components/Patients.vue';
 import Patient from '@/components/Patient.vue';
+import Drug from '@/components/Drug.vue';
 
 export default createRouter({
   history: createWebHistory(),
@@ -55,6 +56,10 @@ export default createRouter({
     {
       path: '/pharmacist-view-drugs',
       component: DrugsViewPharmacist
+    },
+    {
+      path: '/drugs/:drugId',
+      component: Drug
     }
   ],
 })

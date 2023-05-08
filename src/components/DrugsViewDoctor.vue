@@ -27,6 +27,9 @@
                             <td>{{ isClinicalPhase2Tested(item) }}</td>
                             <td>{{ isClinicalPhase3Tested(item) }}</td>
                             <td>{{ isApproved(item) }}</td>
+                            <td><button class="btn btn-secondary drug-info-btn" 
+                                        type="button"
+                                        @click="onShowDrugInfo(item.drug.Id)">See more info</button></td>
                             <!-- <td><button class="btn btn-secondary select-drug" 
                                         type="button" @click="onRowSelected(item)">Select</button>
                             </td> -->
@@ -52,6 +55,9 @@ export default defineComponent({
     methods: {
         onDrugNameEntered(): void {
             this.$store.dispatch('filterInferredDrugs', this.drugName);
+        },
+        onShowDrugInfo(drugId?: number): void {
+            this.$router.push('/drugs/' + drugId);
         }
     },
     async created() {
@@ -66,6 +72,17 @@ export default defineComponent({
 });
 </script>
 
-<style>
+<style scoped>
+.add-treated-drug-container {
+  margin-top: 50px;
+  width: fit-content;
+  background-color: white;
+  padding: 40px;
+}
+
+.search-by-drug-name {
+    width: 40%;
+    padding-bottom: 20px;
+}
 
 </style>

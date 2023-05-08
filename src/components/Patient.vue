@@ -192,6 +192,9 @@
     </div>
 
     <add-patient-disease-dialog :visible="addPatientDiseaseDialogVisible"
+                                :mode="mode"
+                                :diseaseName="hasDisease.name"
+                                :disesaseId="hasDisease.id"
                                 :jmbg="jmbg"
                                 :firstName="firstName"
                                 :lastName="lastName"
@@ -230,6 +233,7 @@ export default defineComponent({
     data() {
         return {
             addPatientDiseaseDialogVisible: false,
+            mode: 'CREATE',
             addPatientTreatedDrugDialogVisible: false,
             jmbg: '',
             firstName: '',
@@ -281,9 +285,10 @@ export default defineComponent({
             console.log('Response from person-disease ', response);
             if (Object.keys(response.data.disease).length > 0) {
                 this.hasDisease = {
-                    id: 0,
+                    id: response.data.disease.id,
                     name: response.data.disease.name
                 } as Disease;
+                this.getPatientInferredFacts();
             }
         })
         .catch((error) => {
@@ -297,6 +302,12 @@ export default defineComponent({
             if (this.lifeQuality === LifeQuality.MUCH_BETTER) return 'much better';
         },
         onPatientDiseaseDialogOpen(): void {
+            if (this.hasDisease.id !== 0) {
+                this.mode = 'UPDATE';
+            }
+            if (this.hasDisease.id === 0) {
+                this.mode = 'CREATE';
+            }
             this.addPatientDiseaseDialogVisible = true;
         },
         onPatientDiseaseDialogClose(): void {
@@ -317,9 +328,9 @@ export default defineComponent({
             await axios.post('/persons/infer-facts', { ...this.person, hasDisease: this.hasDisease})
             .then((response) => {
                 console.log('Response from persons/infer-facts ', response);
-                this.diseaseCourse = response.data.diseaseCourse;
-                this.symptoms = response.data.symptoms;
-                this.diagnosis = response.data.diagnosis;
+                this.diseaseCourse = response.data.diseaseCourse || this.diseaseCourse;
+                this.symptoms = response.data.symptoms || this.symptoms;
+                this.diagnosis = response.data.diagnosis || this.diagnosis;
             })
             .catch((error) => {
                 console.log("Error happened ", error.data);

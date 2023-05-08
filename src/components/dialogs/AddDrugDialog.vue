@@ -23,9 +23,9 @@
                             <input type="text" class="form-control" id="activeIngredient" v-model="activeIngredient">
                         </div>
                          <div class="mb-3">
-                            <label for="diseses" multiple class="col-form-label">May treat</label>
-                            <select class="form-control" id="diseses" v-model="selectedDiseases">
-                                <option v-for="disease in diseases" :key="disease.id" :value="disease.name">{{ disease.name }}</option>
+                            <label for="diseses" class="col-form-label">May treat</label>
+                            <select class="form-control" multiple id="diseses" v-model="selectedDiseases">
+                                <option v-for="disease in diseases" :key="disease.id" :value="disease">{{ disease.name }}</option>
                             </select>
                             <span class="may-treat-custom-info">*It is possible to slect more than one option</span>
                         </div>
@@ -46,6 +46,7 @@
 import { defineComponent } from "vue";
 import axios from "axios";
 import { Drug } from "@/models/Drug";
+import { Disease } from "@/models/Disease";
 
 export default defineComponent({ 
     name: 'AddDrugDialog',
@@ -57,8 +58,8 @@ export default defineComponent({
             dialogVisible: this.visible,
             drugName: '',
             activeIngredient: '',
-            selectedDiseases: [],
-            diseases: []
+            selectedDiseases: new Array<Disease>(),
+            diseases: new Array<Disease>()
         }
     },
     async created() {
@@ -67,6 +68,7 @@ export default defineComponent({
         .then((response) => {
             console.log('Response from GET /diseases ', response.data);
             this.diseases = response.data;
+            this.selectedDiseases = response.data;
         })
         .catch((error) => {
             console.log('Erorr occurred ', error.data);
@@ -79,6 +81,7 @@ export default defineComponent({
         },
         async onAddDrugSubmit() {
             const drug: Drug = {
+                drugId: this.randomInt(1, 100000),
                 name: this.drugName,
                 activeIngredient: this.activeIngredient,
                 isDoseRanged: false,
@@ -91,14 +94,23 @@ export default defineComponent({
             };
             console.log("Create drug method call: ", this.selectedDiseases);
             axios.defaults.headers.common['Authorization'] = 'Bearer ' + localStorage.getItem('token');
-            // axios.post('drugs', drug)
-            // .then((response) => {
-            //     console.log('Response from POST /drugs ', response.data);
-            //     this.$store.dispatch('createDrug', drug);
-            //     this.dialogVisible = false;
-            // }).catch((error) => {
-            //     console.log('Error has happened ', error.data);
-            // });
+            axios.post('/drugs', drug)
+            .then((response) => {
+                console.log('Response from POST /drugs ', response.data);
+                this.$store.dispatch('createDrug', drug);
+                this.dialogVisible = false;
+            }).catch((error) => {
+                console.log('Error has happened ', error.data);
+            });
+            axios.post('/drugs/effects', drug)
+            .then((response) => {
+                console.log('Response from POST /drugs/effects ', response.data);
+            }).catch((error) => {
+                console.log('Error has happened ', error.data);
+            })
+        },
+        randomInt(min: number, max: number): number {
+            return Math.floor(Math.random() * (max - min + 1)) + min;
         }
     },
     watch: { 

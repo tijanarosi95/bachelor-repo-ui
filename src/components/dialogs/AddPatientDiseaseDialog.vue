@@ -1,5 +1,5 @@
 <template>
-    <div v-if="dialogVisible" class="modal fade show" 
+    <div v-if="dialogVisible && mode === 'CREATE'" class="modal fade show" 
         id="patientDiseaseModal"
         role="dialog"
         tabindex="-1" 
@@ -45,6 +45,53 @@
             </div>
         </div>
     </div>
+
+    <div v-if="dialogVisible && mode === 'UPDATE'" class="modal fade show" 
+        id="patientDiseaseModal"
+        role="dialog"
+        tabindex="-1" 
+        aria-labelledby="examplePatientDiseaseModal" 
+        aria-hidden="true" 
+        style="display:block">
+
+        <div class="modal-dialog">
+            <div class="modal-content">
+                 <div class="modal-header">
+                    <h5 class="modal-title" id="examplePatientDiseaseModal">Update patient disease</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" @click="onCloseDialog"></button>
+                </div>
+                <div class="modal-body">
+                    <form @submit.prevent="onAddPatientDiseaseSubmit">
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" name="diseaseGroup" type="radio" id="newOne" value="new" v-model="radioValue">
+                            <label class="form-check-label" for="newOne">Update current disease name</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" name="diseaseGroup" type="radio" id="existingOne" value="existing" v-model="radioValue">
+                            <label class="form-check-label" for="existingOne">Select existing one</label>
+                        </div>
+
+                        <div class="mb-3" v-if="radioValue === 'new'">
+                            <label for="name" class="col-form-label">Disease name</label>
+                            <input type="text" class="form-control" id="name" v-model="diseaseName">
+                        </div>
+                        
+                        <div class="mb-3" v-if="radioValue === 'existing'">
+                            <label for="selectDisease" class="col-form-label">Select disease</label>
+                            <select class="form-control" id="selectDisease" v-model="diseaseName">
+                                <option v-for="disease in diseases" :key="disease.id" :value="disease.name">{{ disease.name }}</option>
+                            </select>
+                        </div>
+
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" @click="onCloseDialog">Cancel</button>
+                    <button type="button" class="btn btn-primary" @click="onUpdatePatientDiseaseSubmit">Add</button>
+                </div>
+            </div>
+        </div>
+    </div>
 </template>
 
 <script lang="ts">
@@ -56,6 +103,9 @@ export default defineComponent({
     name: 'AddPatientDiseaseDialog',
     props: {
         visible: Boolean,
+        mode: String,
+        diseaseName: String,
+        disesaseId: Number,
         jmbg: String,
         firstName: String,
         lastName: String
@@ -64,6 +114,7 @@ export default defineComponent({
         return {
             radioValue: 'new',
             dialogVisible: this.visible,
+            dialogMode: this.mode,
             diseaseName: '',
             diseases: []
         }
@@ -91,7 +142,7 @@ export default defineComponent({
                 firstName: this.firstName,
                 lastName: this.lastName,
                 disease: {
-                    id: this.randomInt(1, 10000),
+                    id: this.radioValue === 'new' ? this.randomInt(1, 10000) : 0,
                     name: this.diseaseName
                 }
             }
