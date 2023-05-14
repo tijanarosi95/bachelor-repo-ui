@@ -7,7 +7,7 @@
                     <div class="patient-name-font-style">{{ firstName }}  {{ lastName }}</div>
                     <div class="row patient-info">
                          <div class="patient-role-font-style col-6">{{ jmbg }}</div>
-                        <div class="patient-role-font-style col-4">{{ age }} year(s)</div>
+                        <div class="patient-role-font-style col-4">{{ age }} years</div>
                         <div class="patient-role-font-style col-2">{{ gender }}</div>
                     </div>
                 </div>
@@ -130,8 +130,21 @@
                 <div class="row section-title title-font-style">
                     <div class="col-8">Treatment info</div>
                     <div class="col-4 manage-disease">
-                        <button class="btn btn-primary btn-sm manage-drug" @click="onPatientTreatedDrugDialogOpen">Manage</button>
+                        <button class="btn btn-primary btn-sm manage-drug" @click="onPatientTreatedDrugDialogOpen" v-if="hasDisease.name !== ''">Manage</button>
                     </div>
+                </div>
+
+                <div class="row section-row">
+                    <div class="col-1">
+                        <span v-if="hasDisease.name !== '' && isTreatedWith.drugId !== ''">
+                            <i class="fa-solid fa-check"></i>
+                        </span>
+                        <span v-else>
+                            <i class="fa-regular fa-x"></i>
+                        </span>
+                    </div>
+                    <div v-if="hasDisease.name !== '' && isTreatedWith.drugId !== ''" class="col-11">Patient is treated with {{ this.isTreatedWith.name }}</div>
+                    <div v-else class="col-11">Disease is not added. Once you add disease you will be able to add treated drug also.</div>
                 </div>
             </div>
         </div>
@@ -203,7 +216,11 @@
     </add-patient-disease-dialog>
 
     <add-patient-treated-drug :visible="addPatientTreatedDrugDialogVisible"
-                              @close-add-patient-drug-dialog="onPatientTreatedDrugDialogClose">
+                              :jmbg="jmbg"
+                              :firstName="firstName"
+                              :lastName="lastName"
+                              @close-add-patient-drug-dialog="onPatientTreatedDrugDialogClose"
+                              @add-patient-treated-drug="onPatientTreatedDrugAdded">
     </add-patient-treated-drug>
 
 </div>
@@ -213,6 +230,7 @@ import { Disease } from "@/models/Disease";
 import { DiseaseCourse } from "@/models/DiseaseCourse";
 import { DiseaseDiagnosis } from "@/models/DiseaseDiagnosis";
 import { DiseaseSymptom } from "@/models/DiseaseSymptom";
+import { Drug } from "@/models/Drug";
 import { Gender } from "@/models/Gender";
 import { LifeQuality } from "@/models/LifeQuality";
 import { Patient } from "@/models/Patient";
@@ -249,6 +267,7 @@ export default defineComponent({
             cancerDetectable: false,
             lifeQuality: LifeQuality.SAME,
             hasDisease: { name: '', id: 0} as Disease,
+            isTreatedWith: { drugId: '', name: ''} as Drug,
             person: {} as Patient,
             diseaseCourse: { type: DiseaseCourse.DEFAULT, isCancerDetectable: false, isCancerReappear: false } as PatientDiseaseCourse,
             diagnosis: { type: DiseaseDiagnosis.DEFAULT, isCancerSpread: false, isCancerGrown: false, isCancerSpreadToOrgans: false } as PatientDiagnosis,
@@ -294,6 +313,17 @@ export default defineComponent({
         .catch((error) => {
             console.log("Error happened ", error.data);
         });
+
+            await axios.get('/drugs/person-treated-drug/' + this.jmbg)
+            .then((response) => {
+                console.log('Response from person-treated-drug ', response);
+                this.isTreatedWith.name = response.data.drugName;
+                this.isTreatedWith.drugId = response.data.drugId;
+            })
+            .catch((error) => {
+                console.log("Error happened ", error.data);
+            });
+        
     },
     methods: {
         getLifeQualityDescription(): string | undefined {
@@ -323,6 +353,10 @@ export default defineComponent({
             this.hasDisease.id = id;
             this.hasDisease.name = name;
             this.getPatientInferredFacts();
+        },
+        onPatientTreatedDrugAdded(id?: string, name?: string): void {
+            this.isTreatedWith.drugId = id;
+            this.isTreatedWith.name = name;
         },
         async getPatientInferredFacts() {
             await axios.post('/persons/infer-facts', { ...this.person, hasDisease: this.hasDisease})

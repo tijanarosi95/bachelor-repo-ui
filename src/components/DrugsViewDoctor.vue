@@ -1,5 +1,17 @@
 <template>
-    <div class="container add-treated-drug-container">
+    <div class="container drugs-container">
+
+        <div class="d-flex flex-column bd-highlight holder-drugs-div">
+            <div style="padding-bottom: 20px"><span><i class="fa-solid fa-arrow-left-long" @click="onBackClick"/></span></div>
+
+            <div class="d-flex flex-row">
+                <img class="drugs-icon" src="../assets/drug-icon.png">
+                <div class="d-flex flex-row drugs-view-summary">
+                    <div class="overview-text">Here you can see and search for drugs</div>
+                </div>
+            </div>
+      </div>
+
         <div class="drugs-table">
             <div class="search-by-drug-name">
                 <input type="text" class="form-control" id="drugName" v-model="drugName" @keyup="onDrugNameEntered" placeholder="Type to search by drug name...">
@@ -58,7 +70,10 @@ export default defineComponent({
         },
         onShowDrugInfo(drugId?: number): void {
             this.$router.push('/drugs/' + drugId);
-        }
+        },
+        onBackClick(): void {
+        this.$router.go(-1);
+        },
     },
     async created() {
         axios.defaults.headers.common['Authorization'] = 'Bearer ' + localStorage.getItem('token');
@@ -73,16 +88,37 @@ export default defineComponent({
 </script>
 
 <style scoped>
-.add-treated-drug-container {
+.drugs-container {
   margin-top: 50px;
   width: fit-content;
   background-color: white;
   padding: 40px;
 }
 
+.drugs-table {
+    padding-top: 30px;
+}
+
 .search-by-drug-name {
     width: 40%;
     padding-bottom: 20px;
+}
+
+.drugs-icon {
+  width: 150px;
+  height: 150px;
+}
+
+.drugs-view-summary {
+  padding: 10px;
+  font-size: 20px;
+}
+
+.overview-text {
+  padding-top: 10px;
+  padding-right: 30px;
+  font-weight: 500;
+  font-size: large;
 }
 
 </style>

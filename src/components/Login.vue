@@ -50,6 +50,7 @@ export default defineComponent({
             const response = await axios.post('login', loginData);
             const jwtResponse: JwtResponse = { jwt: response.data.jwt, role: response.data.role }; 
             localStorage.setItem('token', jwtResponse.jwt);
+            localStorage.setItem('role', jwtResponse.role);
 
             if (jwtResponse.role === UserRole.DOCTOR) {
                 console.log('Doctor logged in! ');

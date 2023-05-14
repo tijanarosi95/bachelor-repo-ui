@@ -1,6 +1,8 @@
 <template>
     <div class="container drug-container">
         <div class="d-flex flex-column bd-highlight holder-drug-div">
+            <div style="padding-bottom: 20px"><span><i class="fa-solid fa-arrow-left-long" @click="onBackClick"/></span></div>
+
             <div class="d-flex flex-row">
                 <img class="drug-icon" src="../assets/drug-icon.png">
                 <div class="d-flex flex-column">
@@ -47,7 +49,7 @@
                         </span>
                     </div>
                     <div v-if="isDoseRanged" class="col-11">It's dose ranged</div>
-                    <div v-else class="col-11">Drug isn't dose ranged.</div>
+                    <div v-else class="col-11">Drug is not dose ranged</div>
                 </div>
 
                 <div class="row section-row">
@@ -60,7 +62,7 @@
                         </span>
                     </div>
                     <div v-if="hasEfficacy" class="col-11">Drug has efficacy</div>
-                    <div v-else class="col-11">Drug doesn't have efficacy.</div>
+                    <div v-else class="col-11">Drug doesn't have efficacy</div>
                 </div>
 
                 <div class="row section-row">
@@ -73,7 +75,7 @@
                         </span>
                     </div>
                     <div v-if="hasSideEffects" class="col-11">Drug has side effects</div>
-                    <div v-else class="col-11">Drug doesn't have side effects.</div>
+                    <div v-else class="col-11">Drug doesn't have side effects</div>
                 </div>
 
                 <div class="row section-row">
@@ -86,7 +88,7 @@
                         </span>
                     </div>
                     <div v-if="hasTherapeuticEffect" class="col-11">Drug has therapeutic effect</div>
-                    <div v-else class="col-11">Drug doesn't have therapeutic effect.</div>
+                    <div v-else class="col-11">Drug doesn't have therapeutic effect</div>
                 </div>
 
                 <div class="row section-row">
@@ -99,7 +101,7 @@
                         </span>
                     </div>
                     <div v-if="hasToxicity" class="col-11">Drug has toxicity</div>
-                    <div v-else class="col-11">Drug is not toxic.</div>
+                    <div v-else class="col-11">Drug doesn't have toxicity</div>
                 </div>
             </div>
         </div>
@@ -137,10 +139,27 @@
             </div>
         </div>
 
+        <div class="col section-card">
+            <div class="row custom-style-row">
+                <div class="row section-title title-font-style">
+                    <div class="col-12">
+                      <div>Drug statistics<i class="fa-solid fa-info info-tooltip" 
+                                                    data-bs-toggle="tooltip"
+                                                    data-bs-placement="right" 
+                                                    title="This tile provides info about drug approval process"/></div>
+                      </div>
+                </div>
+
+                <div class="row section-row">
+                    <canvas id="myChart" width="300" height="300"></canvas>
+                </div>
+            </div>
+        </div>
+
 
       </div>
 
-        <!-- <div class="patients-table">
+        <div class="patients-table">
           <table class="table">
             <thead>
               <tr class="row-alignment">
@@ -150,7 +169,6 @@
                <th scope="col">JMBG</th>
                <th scope="col">Gender</th>
                <th scope="col">Age</th>
-               <th scope="col"></th>
                <th scope="col"></th>
              </tr>
            </thead>
@@ -169,7 +187,7 @@
             </tr>
           </tbody>
         </table>
-      </div> -->
+      </div>
 
 
 
@@ -179,6 +197,7 @@
 import { Drug } from "@/models/Drug";
 import axios from "axios";
 import { defineComponent } from "vue";
+import Chart, { ChartItem } from "chart.js/auto";
 
 export default defineComponent({ 
     name: 'Drug',
@@ -194,6 +213,7 @@ export default defineComponent({
           isDoseRanged: false,
           mayTreat: [],
           drugEffects: {},
+          patients: [],
           preclinicalTestedDrug: {},
           clinicalTestedDrugPhase1: {},
           clinicalTestedDrugPhase2: {},
@@ -201,13 +221,53 @@ export default defineComponent({
           approvedDrug: {}
       }
     },
+    mounted() {
+        const context = document.getElementById('myChart') as ChartItem;
+        const data = {
+            labels: [
+            'Has efficacy',
+            'Has side effects',
+            'Has therapeutic effect',
+            'Is dose ranged',
+            'Has toxicity'
+            ],
+        datasets: [{
+            label: 'My First Dataset',
+            data: [300, 50, 100, 80, 20],
+            backgroundColor: [
+            'rgb(255, 99, 132)',
+            'rgb(255, 159, 64)',
+            'rgb(255, 205, 86)',
+            'rgb(75, 192, 192)',
+            'rgb(54, 162, 235)',
+            ],
+            hoverOffset: 4
+            }]
+        };
+        
+        const myChart = new Chart(context, {
+            type: 'doughnut',
+            data: data
+        });
+        
+        myChart;
+        
+    },
     async created() {
         axios.defaults.headers.common['Authorization'] = 'Bearer ' + localStorage.getItem('token');
         const drugId = this.$route.params.drugId;
         await axios.get('/drugs/' + drugId)
         .then((response) => {
             console.log('Response from /drugs/' + drugId, response);
-            this.drugEffects = { ...response, isApproved: response.data.approved, isDoseRanged: response.data.doseRanged } as Drug;
+            this.drugEffects = { name: response.data.name,
+                                drugId: response.data.drugId,
+                                isApproved: response.data.approved, 
+                                isDoseRanged: response.data.doseRanged,
+                                activeIngredient: response.data.activeIngredient,
+                                hasEfficacy: response.data.hasEfficacy,
+                                hasSideEffects: response.data.hasSideEffects,
+                                hasTherapeuticEffect: response.data.hasTherapeuticEffect,
+                                hasToxicity: response.data.hasToxicity } as Drug;
             this.drugName = response.data.name;
             this.activeIngredient = response.data.activeIngredient;
             this.isApproved = response.data.approved;
@@ -223,6 +283,7 @@ export default defineComponent({
 
         await axios.post('/drugs/infer-facts', this.drugEffects)
         .then((response) => {
+            console.log('Drug facts: ', response);
             this.preclinicalTestedDrug = response.data.preclinicalTestedDrug;
             this.clinicalTestedDrugPhase1 = response.data.clinicalTestedDrugPhase1;
             this.clinicalTestedDrugPhase2 = response.data.clinicalTestedDrugPhase2;
@@ -233,10 +294,23 @@ export default defineComponent({
         .catch((error) => {
 
         })
+
+        await axios.get('/persons/drug/' + this.drugName)
+        .then((response) => {
+            console.log("Get persons/drug/" + this.drugName, response);
+            this.patients = response.data;
+        })
+        .catch((error) => {
+            console.log("error happened")
+        })
     },
     methods: {
-      
-      
+        onBackClick(): void {
+            this.$router.go(-1);
+        },
+        setColCounter(index: number): number {
+        return index+=1;
+      },
     }
 });
 
@@ -249,7 +323,7 @@ export default defineComponent({
 }
 
 .holder-drug-div {
-  padding: 50px;
+  padding: 20px;
 }
 
 .drug-icon {
@@ -269,7 +343,6 @@ export default defineComponent({
 
 .section-card {
   border: solid thin #D3D3D3;
-  padding: 20px;
 }
 
 .section-row {
@@ -286,7 +359,7 @@ export default defineComponent({
 }
 
 .drug-info-main-card {
-  padding: 30px;
+  padding: 20px;
   gap: 20px;
 }
 
@@ -303,5 +376,19 @@ export default defineComponent({
   background: #D3D3D3;
   border-radius: 10px;
   width: min-content;
+}
+
+.patients-table {
+    padding: 30px;
+}
+
+.row-alignment {
+  vertical-align: middle;
+  text-align: center;
+}
+
+#myChart {
+    width: 300px !important;
+    height: 300px !important;
 }
 </style>

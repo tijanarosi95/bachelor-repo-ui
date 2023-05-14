@@ -1,6 +1,9 @@
 <template>
   <div class="container patients-container">
+
       <div class="d-flex flex-column bd-highlight holder-patients-div">
+            <span><i class="fa-solid fa-arrow-left-long" @click="onBackClick"/></span>
+
             <div class="d-flex flex-row">
                 <img class="patients-icon" src="../assets/patient.png">
                 <div class="d-flex flex-row patients-view-summary">
@@ -95,6 +98,9 @@ export default defineComponent ({
     methods: {
       setColCounter(index: number): number {
         return index+=1;
+      },
+      onBackClick(): void {
+        this.$router.go(-1);
       },
       onAddPatientClick(): void {
         this.addPatientDialogVisible = true;

@@ -6,11 +6,11 @@
                 <div class="collapse navbar-collapse">
                     <ul class="navbar-nav ml-auto">
                         <li class="nav-item">
-                          <a href="/login" class="nav-link" @click="handleLogOut">Log out</a>
+                            <a class="nav-link" @click="goToProfile">Profile</a>
                         </li>
-                    <!-- <li class="nav-item">
-                        <a href="#" class="nav-link">Test 2</a>
-                    </li> -->
+                        <li class="nav-item">
+                          <a class="nav-link" @click="handleLogOut">Log out</a>
+                        </li>
                     </ul>
                 </div>
             </div>
@@ -19,6 +19,7 @@
 </template>
 
 <script lang="ts">
+import { UserRole } from "@/models/UserRole";
 import axios from "axios";
 import { defineComponent } from "vue";
 
@@ -29,6 +30,14 @@ export default defineComponent ({
             localStorage.removeItem('token');
             delete axios.defaults.headers.common["Authorization"];
             this.$router.push('/login');
+        },
+        goToProfile(): void {
+            const loggedUserRole = localStorage.getItem('role');
+            if (loggedUserRole === UserRole.DOCTOR) {
+                this.$router.push('/doctor-profile');
+            } else if (loggedUserRole === UserRole.PHARMACIST) {
+                this.$router.push('/pharmacist-profile');
+            }
         }
     }
 });

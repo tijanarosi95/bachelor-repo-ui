@@ -70,3 +70,53 @@ export default defineComponent({
     }
 });
 </script>
+
+<style>
+.profile-container {
+  margin-top: 50px;
+  width: fit-content;
+  background-color: white;
+}
+
+.card-container {
+  padding: 30px;
+}
+
+.holder-profile-div {
+  padding: 50px;
+}
+
+.profile-name-font-style {
+  padding: 10px;
+  font-size: 30px;
+}
+
+.profile-role-font-style {
+  padding-left: 10px;
+  font-size: 20px;
+}
+
+.profile-icon {
+  width: 100px;
+  height: 100px;
+}
+
+.card-img-top {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.card-body, .card-img-top {
+    padding: 15px;
+}
+
+.card {
+    width: 20rem;
+}
+
+.manage-btn {
+    width: 100%;
+}
+
+</style>

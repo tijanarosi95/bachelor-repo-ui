@@ -2,7 +2,7 @@
     <div class="container profile-container">
         <div class="d-flex flex-column bd-highlight holder-profile-div">
             <div class="d-flex flex-row">
-                <img class="profile-icon" src="../assets/user.png">
+                <img class="profile-icon" src="../assets/doctor-icon-1.png">
                 <div class="d-flex flex-column">
                     <div class="profile-name-font-style">{{ firstName }}  {{ lastName }}</div>
                     <div class="profile-role-font-style">{{ role }}</div>

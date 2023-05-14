@@ -1,6 +1,9 @@
 <template>
 <div class="container drugs-container">
+
       <div class="d-flex flex-column bd-highlight holder-drugs-div">
+            <div style="padding-bottom: 20px"><span><i class="fa-solid fa-arrow-left-long" @click="onBackClick"/></span></div>
+
             <div class="d-flex flex-row">
                 <img class="pharmacist-icon" src="../assets/female-user.png">
                 <div class="d-flex flex-row drugs-view-summary">
@@ -115,7 +118,10 @@ export default defineComponent({
         },
         onShowDrugInfo(drugId?: number): void {
             this.$router.push('/drugs/' + drugId);
-        }
+        },
+        onBackClick(): void {
+            this.$router.go(-1);
+        },
     },
     computed: {
       ...mapGetters(['drugs'])
@@ -138,7 +144,7 @@ export default defineComponent({
   height: 150px;
 }
 
-.pharmacist-view-summary {
+.drugs-view-summary {
   padding: 10px;
   font-size: 20px;
 }
@@ -152,7 +158,6 @@ export default defineComponent({
 
 .add-drug-btn {
   height: fit-content;
-  margin-left: 350px;
 }
 
 </style>

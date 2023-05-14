@@ -109,8 +109,8 @@ export default defineComponent({
                 console.log('Error has happened ', error.data);
             })
         },
-        randomInt(min: number, max: number): number {
-            return Math.floor(Math.random() * (max - min + 1)) + min;
+        randomInt(min: number, max: number): string {
+            return (Math.floor(Math.random() * (max - min + 1)) + min).toString();
         }
     },
     watch: { 
@@ -127,5 +127,8 @@ export default defineComponent({
     font-size: small;
 }
 
+#exampleAddDrugModal {
+  backdrop-filter: blur(2px);
+}
 
 </style>

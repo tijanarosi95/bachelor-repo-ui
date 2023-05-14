@@ -14,7 +14,7 @@
                 </div>
                 <div class="modal-body">
                   <form>
-                    <div v-if="selectedDrugName !== ''" class="selected-row-info">You selected {{ selectedDrugName }}</div>
+                    <div v-if="selectedDrug.drugName !== ''" class="selected-row-info">You selected {{ selectedDrug.drugName }}</div>
                   <div class="container add-treated-drug-container">
                     <div class="drugs-table">
                       <table class="table">
@@ -53,7 +53,7 @@
               </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" @click="onCloseDialog">Cancel</button>
-                    <button type="button" class="btn btn-primary">Add</button>
+                    <button type="button" class="btn btn-primary" @click="onAddTreatedDrugClick">Add</button>
                 </div>
             </div>
         </div>
@@ -66,16 +66,20 @@ import { defineComponent } from "vue";
 import axios from "axios";
 import { mapGetters } from "vuex";
 import { DrugInferredData } from "@/models/DrugInferredData";
+import { PatientDrugData } from "@/models/PatientDrugData";
 
 export default defineComponent({
     name: 'AddPatientTreatedDrug',
     props: {
-        visible: Boolean
+        visible: Boolean,
+        jmbg: String,
+        firstName: String,
+        lastName: String
     },
     data() {
         return {
             dialogVisible: this.visible,
-            selectedDrugName: ''
+            selectedDrug: { drugName: '', drugId: ''},
         }
     },
     async created() {
@@ -113,7 +117,27 @@ export default defineComponent({
             return approvedFacts !== null ? 'Yes' : 'No';
         },
         onRowSelected(inferredData?: DrugInferredData): void {
-          this.selectedDrugName = (inferredData !== undefined && inferredData.drugName !== undefined) ? inferredData.drugName : '';
+          this.selectedDrug.drugName = (inferredData !== undefined && inferredData.drugName !== undefined) ? inferredData.drugName : '';
+          this.selectedDrug.drugId = (inferredData !== undefined && inferredData.drugId !== undefined) ? inferredData.drugId : '';
+        },
+        onAddTreatedDrugClick(): void {
+          const selectedDrug: PatientDrugData = {
+            drugId: this.selectedDrug.drugId,
+            drugName: this.selectedDrug.drugName,
+            firstName: this.firstName || '',
+            lastName: this.lastName || '',
+            patientId: this.jmbg
+          }
+          axios.defaults.headers.common['Authorization'] = 'Bearer ' + localStorage.getItem('token');
+          axios.post('/drugs/person-drug', selectedDrug)
+          .then((response) => {
+            console.log('Person drug: ', response.data);
+            this.$emit('add-patient-treated-drug', this.selectedDrug.drugId, this.selectedDrug.drugName);
+            this.dialogVisible = false;
+          })
+          .catch((error) => {
+            console.log('Error caught: ', error);
+          })
         }
     },
     computed: {
@@ -131,6 +155,10 @@ export default defineComponent({
 </script>
 
 <style scoped>
+#patientTreatedDrugModal {
+  backdrop-filter: blur(2px);
+}
+
 .add-treated-drug-container {
   background-color: white;
 }

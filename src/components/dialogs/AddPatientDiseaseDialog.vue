@@ -169,3 +169,9 @@ export default defineComponent({
     }
 });
 </script>
+
+<style>
+#patientDiseaseModal {
+  backdrop-filter: blur(2px);
+}
+</style>

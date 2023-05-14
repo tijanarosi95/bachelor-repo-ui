@@ -42,7 +42,7 @@ const store = new Vuex.Store({
         createDrug(context, drug: Drug) {
             context.commit('addDrug', drug);
         },
-        deleteDrug(context, drugId: number) {
+        deleteDrug(context, drugId: string) {
             context.commit('removeDrug', drugId);
         },
         inferredDrugs(context, drugs: DrugInferredData[]) {
@@ -68,7 +68,7 @@ const store = new Vuex.Store({
         addDrug(state, drug: Drug) {
             state.drugs.push(drug);
         },
-        removeDrug(state, drugId: number) {
+        removeDrug(state, drugId: string) {
             state.drugs = state.drugs.filter(drug => drug.drugId !== drugId);
         },
         inferredDrugs(state, drugs: DrugInferredData[]) {
