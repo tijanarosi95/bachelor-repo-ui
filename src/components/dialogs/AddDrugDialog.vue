@@ -85,9 +85,9 @@ export default defineComponent({
                 name: this.drugName,
                 activeIngredient: this.activeIngredient,
                 isDoseRanged: false,
-                hasEfficacy: false,
+                hasEfficacy: true,
                 hasToxicity: false,
-                hasSideEffects: false,
+                hasSideEffects: true,
                 hasTherapeuticEffect: false,
                 isApproved: false,
                 mayTreat: this.selectedDiseases

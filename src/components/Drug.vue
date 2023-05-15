@@ -124,15 +124,67 @@
 
                 <div class="row section-row" style="padding-top: 25px;">
                     <div class="col-1">
-                        <span v-if="isApproved">
+                        <span v-if="preclinicalTestedDrug">
                             <i class="fa-solid fa-check"></i>
                         </span>
                         <span v-else>
                             <i class="fa-regular fa-x"></i>
                         </span>
                     </div>
-                    <div v-if="isApproved" class="col-11">Drug is approved</div>
-                    <div v-else class="col-11">Drug is not approved.</div>
+                    <div v-if="preclinicalTestedDrug" class="col-11">Drug passed PRECLINICAL PHASE</div>
+                    <div v-else class="col-11">Drug didn't pass PRECLINICAL PHASE</div>
+                </div>
+
+                <div class="row section-row" style="padding-top: 25px;">
+                    <div class="col-1">
+                        <span v-if="clinicalTestedDrugPhase1">
+                            <i class="fa-solid fa-check"></i>
+                        </span>
+                        <span v-else>
+                            <i class="fa-regular fa-x"></i>
+                        </span>
+                    </div>
+                    <div v-if="clinicalTestedDrugPhase1" class="col-11">Drug passed CLINICAL PHASE 1</div>
+                    <div v-else class="col-11">Drug didn't pass CLINICAL PHASE 1</div>
+                </div>
+
+                <div class="row section-row" style="padding-top: 25px;">
+                    <div class="col-1">
+                        <span v-if="clinicalTestedDrugPhase2">
+                            <i class="fa-solid fa-check"></i>
+                        </span>
+                        <span v-else>
+                            <i class="fa-regular fa-x"></i>
+                        </span>
+                    </div>
+                    <div v-if="clinicalTestedDrugPhase2" class="col-11">Drug passed CLINICAL PHASE 2</div>
+                    <div v-else class="col-11">Drug didn't pass CLINICAL PHASE 2</div>
+                </div>
+
+                <div class="row section-row" style="padding-top: 25px;">
+                    <div class="col-1">
+                        <span v-if="clinicalTestedDrugPhase3">
+                            <i class="fa-solid fa-check"></i>
+                        </span>
+                        <span v-else>
+                            <i class="fa-regular fa-x"></i>
+                        </span>
+                    </div>
+                    <div v-if="clinicalTestedDrugPhase3" class="col-11">Drug passed CLINICAL PHASE 3</div>
+                    <div v-else class="col-11">Drug didn't pass CLINICAL PHASE 3</div>
+                </div>
+
+                <div class="row section-row" style="padding-top: 25px;">
+                    <div class="col-1">
+                        <span v-if="approvedDrug">
+                            <i class="fa-solid fa-check"></i>
+                        </span>
+                        <span v-else>
+                            <i class="fa-regular fa-x"></i>
+                        </span>
+                    </div>
+                    <div v-if="approvedDrug" class="col-11">Drug is APPROVED</div>
+                    <div v-else class="col-11">Drug is not APPROVED</div>
                 </div>
 
 
