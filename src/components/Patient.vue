@@ -1,6 +1,8 @@
 <template>
     <div class="container patient-container">
         <div class="d-flex flex-column bd-highlight holder-patient-div">
+            <div style="padding-bottom: 20px"><span><i class="fa-solid fa-arrow-left-long" @click="onBackClick"/></span></div>
+
             <div class="d-flex flex-row">
                 <img class="patient-icon" src="../assets/patient.png">
                 <div class="d-flex flex-column">
@@ -130,21 +132,21 @@
                 <div class="row section-title title-font-style">
                     <div class="col-8">Treatment info</div>
                     <div class="col-4 manage-disease">
-                        <button class="btn btn-primary btn-sm manage-drug" @click="onPatientTreatedDrugDialogOpen" v-if="hasDisease.name !== ''">Manage</button>
+                        <button class="btn btn-primary btn-sm manage-drug" @click="onPatientTreatedDrugDialogOpen" v-if="hasDisease.name">Manage</button>
                     </div>
                 </div>
 
                 <div class="row section-row">
                     <div class="col-1">
-                        <span v-if="hasDisease.name !== '' && isTreatedWith.drugId !== ''">
+                        <span v-if="isTreatedWith.drugId">
                             <i class="fa-solid fa-check"></i>
                         </span>
                         <span v-else>
                             <i class="fa-regular fa-x"></i>
                         </span>
                     </div>
-                    <div v-if="hasDisease.name !== '' && isTreatedWith.drugId !== ''" class="col-11">Patient is treated with {{ this.isTreatedWith.name }}</div>
-                    <div v-else class="col-11">Disease is not added. Once you add disease you will be able to add treated drug also.</div>
+                    <div v-if="isTreatedWith.drugId" class="col-11">Patient is treated with {{ this.isTreatedWith.name }}</div>
+                    <div v-else class="col-11">Disease is not added. Click manage to add disease.</div>
                 </div>
             </div>
         </div>
@@ -216,6 +218,7 @@
     </add-patient-disease-dialog>
 
     <add-patient-treated-drug :visible="addPatientTreatedDrugDialogVisible"
+                              :key="keyValue"
                               :jmbg="jmbg"
                               :firstName="firstName"
                               :lastName="lastName"
@@ -252,6 +255,7 @@ export default defineComponent({
         return {
             addPatientDiseaseDialogVisible: false,
             mode: 'CREATE',
+            keyValue: 1,
             addPatientTreatedDrugDialogVisible: false,
             jmbg: '',
             firstName: '',
@@ -344,6 +348,7 @@ export default defineComponent({
             this.addPatientDiseaseDialogVisible = false;
         },
         onPatientTreatedDrugDialogOpen(): void {
+            this.keyValue += 1;
             this.addPatientTreatedDrugDialogVisible = true;
         },
         onPatientTreatedDrugDialogClose(): void {
@@ -369,7 +374,10 @@ export default defineComponent({
             .catch((error) => {
                 console.log("Error happened ", error.data);
             });
-        }
+        },
+        onBackClick(): void {
+            this.$router.go(-1);
+        },
     }
 
 });

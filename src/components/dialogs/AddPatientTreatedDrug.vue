@@ -83,10 +83,12 @@ export default defineComponent({
         }
     },
     async created() {
-        axios.defaults.headers.common['Authorization'] = 'Bearer ' + localStorage.getItem('token');
-        const response = await axios.get('/drugs/infer-facts-test');
-        console.log('Response from GET /drugs/infer-facts-test: ', response);
-        this.$store.dispatch('inferredDrugs', response.data);
+      if (this.dialogVisible) {
+          axios.defaults.headers.common['Authorization'] = 'Bearer ' + localStorage.getItem('token');
+          const response = await axios.get('/drugs/infer-facts-test');
+          console.log('Response from GET /drugs/infer-facts-test: ', response);
+          this.$store.dispatch('inferredDrugs', response.data);
+      }
     },
     methods: {
         onCloseDialog(): void {

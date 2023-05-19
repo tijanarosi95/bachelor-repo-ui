@@ -14,7 +14,7 @@
 
         <div class="drugs-table">
             <div class="search-by-drug-name">
-                <input type="text" class="form-control" id="drugName" v-model="drugName" @keyup="onDrugNameEntered" placeholder="Type to search by drug name...">
+                <input type="text" class="form-control" id="drugName" v-model="drugName" @input="onDrugNameEntered" placeholder="Type to search by drug name...">
             </div>
             <table class="table">
                 <thead>
@@ -27,6 +27,7 @@
                         <th scope="col">Phase 2 clinical tested</th>
                         <th scope="col">Phase 3 clinical tested</th>
                         <th scope="col">Approved</th>
+                        <th scope="col"></th>
                     </tr>
                 </thead>
                 <tbody>
@@ -41,7 +42,7 @@
                             <td>{{ isApproved(item) }}</td>
                             <td><button class="btn btn-secondary drug-info-btn" 
                                         type="button"
-                                        @click="onShowDrugInfo(item.drug.Id)">See more info</button></td>
+                                        @click="onShowDrugInfo(item.drugId)">See more info</button></td>
                             <!-- <td><button class="btn btn-secondary select-drug" 
                                         type="button" @click="onRowSelected(item)">Select</button>
                             </td> -->
@@ -56,6 +57,7 @@
 import { defineComponent } from "vue";
 import axios from "axios";
 import { mapGetters } from "vuex";
+import { DrugInferredData } from "@/models/DrugInferredData";
 
 export default defineComponent({ 
     name: 'DrugsViewDoctor',
@@ -65,14 +67,38 @@ export default defineComponent({
         }
     },
     methods: {
+        setColCounter(index: number): number {
+            return index+=1;
+        },
         onDrugNameEntered(): void {
+            console.log('Entered value');
             this.$store.dispatch('filterInferredDrugs', this.drugName);
         },
         onShowDrugInfo(drugId?: number): void {
             this.$router.push('/drugs/' + drugId);
         },
         onBackClick(): void {
-        this.$router.go(-1);
+            this.$router.go(-1);
+        },
+        isPreclinicalTested(inferredData?: DrugInferredData): string {
+            const preclinicalTestedFacts = inferredData ? inferredData.preclinicalTestedDrug : null;
+            return preclinicalTestedFacts !== null ? 'Yes' : 'No';
+        },
+        isClinicalPhase1Tested(inferredData?: DrugInferredData): string {
+            const clinicalTestedFacts = inferredData ? inferredData.clinicalTestedDrugPhase1 : null;
+            return clinicalTestedFacts !== null ? 'Yes' : 'No';
+        },
+        isClinicalPhase2Tested(inferredData?: DrugInferredData): string {
+            const clinicalTestedFacts = inferredData ? inferredData.clinicalTestedDrugPhase2 : null;
+            return clinicalTestedFacts !== null ? 'Yes' : 'No';
+        },
+        isClinicalPhase3Tested(inferredData?: DrugInferredData): string {
+            const clinicalTestedFacts = inferredData ? inferredData.clinicalTestedDrugPhase3 : null;
+            return clinicalTestedFacts !== null ? 'Yes' : 'No';
+        },
+        isApproved(inferredData?: DrugInferredData): string {
+            const approvedFacts = inferredData ? inferredData.approvedDrug : null;
+            return approvedFacts !== null ? 'Yes' : 'No';
         },
     },
     async created() {
@@ -119,6 +145,11 @@ export default defineComponent({
   padding-right: 30px;
   font-weight: 500;
   font-size: large;
+}
+
+.row-alignment {
+  vertical-align: middle;
+  text-align: center;
 }
 
 </style>

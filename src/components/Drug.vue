@@ -6,7 +6,7 @@
             <div class="d-flex flex-row">
                 <img class="drug-icon" src="../assets/drug-icon.png">
                 <div class="d-flex flex-column">
-                    <div class=" row drug-name-font-style">{{ drugName }}</div>
+                    <div class="row drug-name-font-style">{{ drugName }}</div>
                     <div class="row active-ingredient-font-style">{{ activeIngredient }}</div>
                 </div>
             </div>
@@ -21,7 +21,7 @@
                       <div>Drug information <i class="fa-solid fa-info info-tooltip" data-bs-toggle="tooltip" data-bs-placement="right" title="Click manage to update drug data"/></div>
                       
                     </div>
-                    <div class="col-4 manage-drug-info">
+                    <div class="col-4 manage-drug-info" v-if="isLoggedUserPharmacist">
                         <button class="btn btn-primary btn-sm manage-drug">Manage</button>
                     </div>
                 </div>
@@ -212,6 +212,7 @@
       </div>
 
         <div class="patients-table">
+          <span>Treated patients</span>  
           <table class="table">
             <thead>
               <tr class="row-alignment">
@@ -250,6 +251,7 @@ import { Drug } from "@/models/Drug";
 import axios from "axios";
 import { defineComponent } from "vue";
 import Chart, { ChartItem } from "chart.js/auto";
+import { UserRole } from "@/models/UserRole";
 
 export default defineComponent({ 
     name: 'Drug',
@@ -361,8 +363,14 @@ export default defineComponent({
             this.$router.go(-1);
         },
         setColCounter(index: number): number {
-        return index+=1;
-      },
+            return index+=1;
+        },
+        onShowPatientInfo(jmbg: string): void {
+            this.$router.push('/patients/' + jmbg);
+        },
+        isLoggedUserPharmacist(): boolean {
+            return !!UserRole.PHARMACIST.includes(localStorage.getItem('role') || '');
+        }
     }
 });
 

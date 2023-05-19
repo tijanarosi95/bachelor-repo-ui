@@ -73,10 +73,14 @@ const store = new Vuex.Store({
         },
         inferredDrugs(state, drugs: DrugInferredData[]) {
             state.inferredDrugs = drugs;
+            state.filteredInferredDrugs = drugs;
         },
         filterInferredDrugs(state, drugName: string) {
-            state.filteredInferredDrugs = [...state.inferredDrugs];
-            drugName === '' ? state.filteredInferredDrugs : state.filteredInferredDrugs.filter(drug => drug.drugName?.includes(drugName));
+            if (drugName !== '') {
+                state.filteredInferredDrugs = state.filteredInferredDrugs.filter(drug => drug.drugName?.includes(drugName));
+            } else {
+                state.filteredInferredDrugs = state.inferredDrugs;
+            }
         }
     }
 });
