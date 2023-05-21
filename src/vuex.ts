@@ -1,4 +1,5 @@
 import Vuex from 'vuex';
+import { Disease } from './models/Disease';
 import { Drug } from './models/Drug';
 import { DrugInferredData } from './models/DrugInferredData';
 import { Patient } from './models/Patient';
@@ -7,7 +8,8 @@ const state = {
     patients: new Array<Patient>(),
     drugs: new Array<Drug>(),
     inferredDrugs: new Array<DrugInferredData>(),
-    filteredInferredDrugs: new Array<DrugInferredData>()
+    filteredInferredDrugs: new Array<DrugInferredData>(),
+    diseases: new Array<Disease>()
 }
 
 const store = new Vuex.Store({ 
@@ -24,6 +26,9 @@ const store = new Vuex.Store({
         },
         filteredInferredDrugs: (state) => {
             return state.filteredInferredDrugs;
+        },
+        diseases: (state) => {
+            return state.diseases;
         }
     },
     actions: {
@@ -50,6 +55,12 @@ const store = new Vuex.Store({
         },
         filterInferredDrugs(context, drugName: string) {
             context.commit('filterInferredDrugs', drugName);
+        },
+        diseases(context, diseases: Disease[]) {
+            context.commit('diseases', diseases);
+        },
+        createDisease(context, disease: Disease) {
+            context.commit('addDisease', disease);
         }
     },
     mutations: {
@@ -81,6 +92,12 @@ const store = new Vuex.Store({
             } else {
                 state.filteredInferredDrugs = state.inferredDrugs;
             }
+        },
+        diseases(state, diseases: Disease[]) {
+            state.diseases = diseases;
+        },
+        addDisease(state, disease: Disease) {
+            state.diseases.push(disease);
         }
     }
 });

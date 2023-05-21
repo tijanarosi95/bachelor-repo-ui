@@ -11,7 +11,7 @@
         </div>
 
         <div class="row card-container">
-            <div class="col-6 mb-4">
+            <div class="col-4 mb-4">
                 <div class="card">
                    <img class="card-img-top" src="../assets/patient.png" alt="Patient cap">
                    <div class="card-body">
@@ -22,7 +22,7 @@
                 </div>
             </div>
             
-            <div class="col-6 mb-4">
+            <div class="col-4 mb-4">
                 <div class="card">
                    <img class="card-img-top" src="../assets/drug1.png" alt="Drug cap">
                    <div class="card-body">
@@ -32,6 +32,18 @@
                    </div>
                 </div>
             </div>
+
+            <div class="col-4 mb-4">
+                <div class="card">
+                   <img class="card-img-top" src="../assets/disease.png" alt="Disease cap">
+                   <div class="card-body">
+                      <h5 class="card-title">Diseases</h5>
+                      <p class="card-text">View and manage different diseases types which are registered in this system.</p>
+                      <button class="btn btn-primary manage-btn" @click="onDiseasesClick">Manage</button>
+                   </div>
+                </div>
+            </div>
+
            <div>
         </div>
     </div>
@@ -65,6 +77,9 @@ export default defineComponent({
         },
         onDrugsClick(): void {
             this.$router.push('/doctor-view-drugs');
+        },
+        onDiseasesClick(): void {
+            this.$router.push('/diseases');
         }
     }
 });

@@ -146,7 +146,7 @@
                         </span>
                     </div>
                     <div v-if="isTreatedWith.drugId" class="col-11">Patient is treated with {{ this.isTreatedWith.name }}</div>
-                    <div v-else class="col-11">Disease is not added. Click manage to add disease.</div>
+                    <div v-else class="col-11">Drug is not added. Click manage to add treated drug.</div>
                 </div>
             </div>
         </div>

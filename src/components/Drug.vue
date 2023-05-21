@@ -212,7 +212,7 @@
       </div>
 
         <div class="patients-table">
-          <span>Treated patients</span>  
+          <div class="title-font-style">Treated patients</div>  
           <table class="table">
             <thead>
               <tr class="row-alignment">
@@ -275,7 +275,17 @@ export default defineComponent({
           approvedDrug: {}
       }
     },
-    mounted() {
+    async mounted() {
+        axios.defaults.headers.common['Authorization'] = 'Bearer ' + localStorage.getItem('token');
+        const drugId = this.$route.params.drugId;
+        let statisticData: any = [];
+
+        await axios.get('/drugs/statistics/' + drugId)
+        .then((response) => {
+            console.log('Mounted statistics: ', response.data);
+            statisticData = response.data;
+        })
+
         const context = document.getElementById('myChart') as ChartItem;
         const data = {
             labels: [
@@ -287,7 +297,7 @@ export default defineComponent({
             ],
         datasets: [{
             label: 'My First Dataset',
-            data: [300, 50, 100, 80, 20],
+            data: statisticData,
             backgroundColor: [
             'rgb(255, 99, 132)',
             'rgb(255, 159, 64)',
@@ -305,6 +315,7 @@ export default defineComponent({
         });
         
         myChart;
+
         
     },
     async created() {

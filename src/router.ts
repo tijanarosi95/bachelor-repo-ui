@@ -8,6 +8,8 @@ import DrugsViewPharmacist from '@/components/DrugsViewPharmacist.vue';
 import Patients from '@/components/Patients.vue';
 import Patient from '@/components/Patient.vue';
 import Drug from '@/components/Drug.vue';
+import Diseases from '@/components/Diseases.vue';
+import Disease from '@/components/Disease.vue';
 
 export default createRouter({
   history: createWebHistory(),
@@ -60,6 +62,14 @@ export default createRouter({
     {
       path: '/drugs/:drugId',
       component: Drug
+    },
+    {
+      path: '/diseases',
+      component: Diseases
+    },
+    {
+      path: '/diseases/:diseaseId',
+      component: Disease
     }
   ],
 })
