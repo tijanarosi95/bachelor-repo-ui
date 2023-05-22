@@ -132,7 +132,7 @@
                 <div class="row section-title title-font-style">
                     <div class="col-8">Treatment info</div>
                     <div class="col-4 manage-disease">
-                        <button class="btn btn-primary btn-sm manage-drug" @click="onPatientTreatedDrugDialogOpen" v-if="hasDisease.name">Manage</button>
+                        <button class="btn btn-primary btn-sm manage-drug" @click="onPatientTreatedDrugDialogOpen" v-if="hasDisease.name && isLoggedUserDoctor">Manage</button>
                     </div>
                 </div>
 
@@ -156,7 +156,7 @@
                 <div class="row disease-section-title title-font-style">
                     <div class="col-8">Disease info</div>
                     <div class="col-4 manage-disease">
-                        <button class="btn btn-primary btn-sm manage-disease" @click="onPatientDiseaseDialogOpen">Manage</button>
+                        <button class="btn btn-primary btn-sm manage-disease" v-if="isLoggedUserDoctor" @click="onPatientDiseaseDialogOpen">Manage</button>
                     </div>
                 </div>
                 
@@ -240,6 +240,7 @@ import { Patient } from "@/models/Patient";
 import { PatientDiagnosis } from "@/models/PatientDiagnosis";
 import { PatientDiseaseCourse } from "@/models/PatientDiseaseCourse";
 import { PatientSymptom } from "@/models/PatientSymptom";
+import { UserRole } from "@/models/UserRole";
 import axios from "axios";
 import { defineComponent } from "vue";
 import AddPatientDiseaseDialog from "./dialogs/AddPatientDiseaseDialog.vue";
@@ -362,6 +363,9 @@ export default defineComponent({
         onPatientTreatedDrugAdded(id?: string, name?: string): void {
             this.isTreatedWith.drugId = id;
             this.isTreatedWith.name = name;
+        },
+        isLoggedUserDoctor(): boolean {
+            return !!UserRole.DOCTOR.includes(localStorage.getItem('role') || '');
         },
         async getPatientInferredFacts() {
             await axios.post('/persons/infer-facts', { ...this.person, hasDisease: this.hasDisease})

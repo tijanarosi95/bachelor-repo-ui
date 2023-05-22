@@ -22,7 +22,7 @@
                       
                     </div>
                     <div class="col-4 manage-drug-info" v-if="isLoggedUserPharmacist">
-                        <button class="btn btn-primary btn-sm manage-drug">Manage</button>
+                        <button class="btn btn-primary btn-sm manage-drug" @click="openUpdateDrugEffectsDialog">Manage</button>
                     </div>
                 </div>
 
@@ -242,8 +242,18 @@
         </table>
       </div>
 
-
-
+    <update-drug-effects-dialog :key="keyValue"
+                                :visible="updateDrugEffectsDialogVisible"
+                                :id="drugId"
+                                :name="drugName"
+                                :ingredient="activeIngredient"
+                                :approved="isApproved"
+                                :sideEffects="hasSideEffects"
+                                :efficacy="hasEfficacy"
+                                :therapeuticEffect="hasTherapeuticEffect"
+                                :doseRanged="isDoseRanged"
+                                @close-update-drug-effects-dialog="closeUpdateDrugEffectsDialog"
+                                @update-drug-effects="updateDrugEffectsState"/>
     </div>
 </template>
 <script lang="ts">
@@ -252,12 +262,16 @@ import axios from "axios";
 import { defineComponent } from "vue";
 import Chart, { ChartItem } from "chart.js/auto";
 import { UserRole } from "@/models/UserRole";
+import UpdateDrugEffectsDialog from "./dialogs/UpdateDrugEffectsDialog.vue";
 
-export default defineComponent({ 
+export default defineComponent({
+  components: { UpdateDrugEffectsDialog }, 
     name: 'Drug',
     data() {
       return {
+          keyValue: 1,
           drugName: '',
+          drugId: '',
           activeIngredient: '',
           isApproved: false,
           hasSideEffects: false,
@@ -272,7 +286,8 @@ export default defineComponent({
           clinicalTestedDrugPhase1: {},
           clinicalTestedDrugPhase2: {},
           clinicalTestedDrugPhase3: {},
-          approvedDrug: {}
+          approvedDrug: {},
+          updateDrugEffectsDialogVisible: false
       }
     },
     async mounted() {
@@ -320,10 +335,10 @@ export default defineComponent({
     },
     async created() {
         axios.defaults.headers.common['Authorization'] = 'Bearer ' + localStorage.getItem('token');
-        const drugId = this.$route.params.drugId;
-        await axios.get('/drugs/' + drugId)
+        this.drugId = this.$route.params.drugId as string;
+        await axios.get('/drugs/' + this.drugId)
         .then((response) => {
-            console.log('Response from /drugs/' + drugId, response);
+            console.log('Response from /drugs/' + this.drugId, response);
             this.drugEffects = { name: response.data.name,
                                 drugId: response.data.drugId,
                                 isApproved: response.data.approved, 
@@ -341,24 +356,13 @@ export default defineComponent({
             this.hasTherapeuticEffect = response.data.hasTherapeuticEffect;
             this.hasToxicity = response.data.hasToxicity;
             this.isDoseRanged = response.data.doseRanged;
+            this.keyValue += 1;
         })
         .catch((error) => {
             console.log('Error occurred!');
         })
 
-        await axios.post('/drugs/infer-facts', this.drugEffects)
-        .then((response) => {
-            console.log('Drug facts: ', response);
-            this.preclinicalTestedDrug = response.data.preclinicalTestedDrug;
-            this.clinicalTestedDrugPhase1 = response.data.clinicalTestedDrugPhase1;
-            this.clinicalTestedDrugPhase2 = response.data.clinicalTestedDrugPhase2;
-            this.clinicalTestedDrugPhase3 = response.data.clinicalTestedDrugPhase3;
-            this.approvedDrug = response.data.approvedDrug;
-
-        })
-        .catch((error) => {
-
-        })
+        this.inferDrugFacts();
 
         await axios.get('/persons/drug/' + this.drugName)
         .then((response) => {
@@ -381,6 +385,34 @@ export default defineComponent({
         },
         isLoggedUserPharmacist(): boolean {
             return !!UserRole.PHARMACIST.includes(localStorage.getItem('role') || '');
+        },
+        openUpdateDrugEffectsDialog(): void {
+            this.updateDrugEffectsDialogVisible = true;
+        },
+        closeUpdateDrugEffectsDialog(): void {
+            this.updateDrugEffectsDialogVisible = false;
+        },
+        updateDrugEffectsState(updatedDrugEffects: Drug): void {
+            this.isApproved = updatedDrugEffects.isApproved || false;
+            this.hasEfficacy = updatedDrugEffects.hasEfficacy || true;
+            this.hasSideEffects = updatedDrugEffects.hasSideEffects || true;
+            this.hasTherapeuticEffect = updatedDrugEffects.hasTherapeuticEffect || false;
+            this.hasToxicity = updatedDrugEffects.hasToxicity || false;
+            this.isDoseRanged = updatedDrugEffects.isDoseRanged || false;
+            this.inferDrugFacts();
+        },
+        async inferDrugFacts() {
+            await axios.post('/drugs/infer-facts', this.drugEffects)
+            .then((response) => {
+                console.log('Drug facts: ', response);
+                this.preclinicalTestedDrug = response.data.preclinicalTestedDrug;
+                this.clinicalTestedDrugPhase1 = response.data.clinicalTestedDrugPhase1;
+                this.clinicalTestedDrugPhase2 = response.data.clinicalTestedDrugPhase2;
+                this.clinicalTestedDrugPhase3 = response.data.clinicalTestedDrugPhase3;
+                this.approvedDrug = response.data.approvedDrug;
+            })
+            .catch((error) => {
+            })
         }
     }
 });

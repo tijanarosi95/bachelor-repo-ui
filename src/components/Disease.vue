@@ -81,7 +81,7 @@ export default defineComponent({
             //get drugs by whom is treated this disease
             axios.get('/drugs/diseases/', { params: params })
             .then((response) => {
-                console.log('Response from /drugs/diseases/' + this.diseaseName, response);
+                console.log('Response from /drugs/diseases/', response);
                 this.drugs = response.data;
             })
             .catch((error) => {});
