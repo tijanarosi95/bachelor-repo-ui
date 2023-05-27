@@ -160,4 +160,9 @@ export default defineComponent({
   height: fit-content;
 }
 
+.row-alignment {
+  vertical-align: middle;
+  text-align: center;
+}
+
 </style>

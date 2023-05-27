@@ -1,4 +1,5 @@
 import { Disease } from "./Disease";
+import { Drug } from "./Drug";
 import { Gender } from "./Gender";
 import { LifeQuality } from "./LifeQuality";
 
@@ -16,5 +17,6 @@ export interface Patient {
     isCancerReappear: boolean,
     isCancerDetectable: boolean,
     lifeQuality: LifeQuality,
-    hasDisease?: Disease
+    hasDisease?: Disease,
+    isTreatedWith?: Drug,
 }

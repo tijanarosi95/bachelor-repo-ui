@@ -6,6 +6,7 @@ import { Patient } from './models/Patient';
 
 const state = {
     patients: new Array<Patient>(),
+    filteredPatients: new Array<Patient>(),
     drugs: new Array<Drug>(),
     inferredDrugs: new Array<DrugInferredData>(),
     filteredInferredDrugs: new Array<DrugInferredData>(),
@@ -17,6 +18,9 @@ const store = new Vuex.Store({
     getters: {
         patients: (state) => {
             return state.patients;
+        },
+        filteredPatients: (state) => {
+            return state.filteredPatients;
         },
         drugs: (state) => {
             return state.drugs;
@@ -56,6 +60,9 @@ const store = new Vuex.Store({
         filterInferredDrugs(context, drugName: string) {
             context.commit('filterInferredDrugs', drugName);
         },
+        filterPatients(context, treatedDrug: string) {
+            context.commit('filterPatients', treatedDrug);
+        },
         diseases(context, diseases: Disease[]) {
             context.commit('diseases', diseases);
         },
@@ -66,6 +73,7 @@ const store = new Vuex.Store({
     mutations: {
         patients(state, patients: Patient[]) {
            state.patients = patients;
+           state.filteredPatients = patients;
         },
         addPatient(state, patient: Patient) {
             state.patients.push(patient);
@@ -91,6 +99,13 @@ const store = new Vuex.Store({
                 state.filteredInferredDrugs = state.filteredInferredDrugs.filter(drug => drug.drugName?.includes(drugName));
             } else {
                 state.filteredInferredDrugs = state.inferredDrugs;
+            }
+        },
+        filterPatients(state, treatedDrug: string) {
+            if (treatedDrug !== '') {
+                state.filteredPatients = state.filteredPatients.filter(patient => patient.isTreatedWith?.name?.includes(treatedDrug));
+            } else {
+                state.filteredPatients = state.patients;
             }
         },
         diseases(state, diseases: Disease[]) {

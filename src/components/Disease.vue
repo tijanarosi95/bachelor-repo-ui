@@ -18,9 +18,9 @@
                         <div class="col-10">
                             <div>Disease can be treated by those drugs</div>
                         </div>
-                        <div class="col-2 manage-disease-info" v-if="isLoggedUserDoctor">
+                        <!-- <div class="col-2 manage-disease-info" v-if="isLoggedUserDoctor">
                             <button class="btn btn-primary btn-sm manage-disease">Manage</button>
-                        </div>
+                        </div> -->
                     </div>
                     <div class="row section-row">
                         <div class="disease-drugs-table">
@@ -37,9 +37,9 @@
                                 <tbody>
                                     <tr v-for="(item, index) in this.drugs" :key="item.drugId" class="row-alignment">
                                         <th scope="row">{{ setColCounter(index) }}</th>
-                                            <td>{{ item.drugName }}</td>
+                                            <td>{{ item.name }}</td>
                                             <td>{{ item.activeIngredient }}</td>
-                                            <td>{{ isApproved(item) }}</td>
+                                            <td>{{ isApproved(item.approved) }}</td>
                                             <td><button class="btn btn-secondary drug-info-btn" 
                                                 type="button"
                                                 @click="onShowDrugInfo(item.drugId)">See more info</button></td>
@@ -147,6 +147,10 @@ export default defineComponent({
     font-weight: 800;
 }
 
+.row-alignment {
+  vertical-align: middle;
+  text-align: center;
+}
 
 .disease-info-main-card {
   padding: 20px;

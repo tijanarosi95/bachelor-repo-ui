@@ -6,6 +6,7 @@ import PharmacistProfile from '@/components/PharmacistProfile.vue';
 import DrugsViewDoctor from '@/components/DrugsViewDoctor.vue';
 import DrugsViewPharmacist from '@/components/DrugsViewPharmacist.vue';
 import Patients from '@/components/Patients.vue';
+import PatientsViewPharmacist from '@/components/PatientsViewPharmacist.vue';
 import Patient from '@/components/Patient.vue';
 import Drug from '@/components/Drug.vue';
 import Diseases from '@/components/Diseases.vue';
@@ -70,6 +71,10 @@ export default createRouter({
     {
       path: '/diseases/:diseaseId',
       component: Disease
+    },
+    {
+      path: '/patients-view',
+      component: PatientsViewPharmacist
     }
   ],
 })

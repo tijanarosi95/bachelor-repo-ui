@@ -62,7 +62,7 @@ export default defineComponent({
     },
     methods: {
         onPatientsClick(): void {
-            this.$router.push('');
+            this.$router.push('/patients-view');
         },
         onDrugsClick(): void {
             this.$router.push('/pharmacist-view-drugs');

@@ -387,6 +387,7 @@ export default defineComponent({
             return !!UserRole.PHARMACIST.includes(localStorage.getItem('role') || '');
         },
         openUpdateDrugEffectsDialog(): void {
+            this.keyValue += 1;
             this.updateDrugEffectsDialogVisible = true;
         },
         closeUpdateDrugEffectsDialog(): void {

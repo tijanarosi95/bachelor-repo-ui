@@ -6,13 +6,23 @@
             <div class="d-flex flex-row">
                 <img class="patient-icon" src="../assets/patient.png">
                 <div class="d-flex flex-column">
-                    <div class="patient-name-font-style">{{ firstName }}  {{ lastName }}</div>
+                    <div class="patient-name-font-style row">
+                       <div class="col-9"> {{ firstName }}  {{ lastName }} </div>
+                       <div class="col-3"> <button class="btn btn-primary manage-patient-btn" 
+                            type="button"
+                            data-bs-toggle="modal"
+                            data-bs-target="#exampleUpdatePatientModal"
+                            @click="onPatientInfoUpdateOpen"
+                            v-if="isLoggedUserDoctor">Manage</button></div>
+                    </div>
                     <div class="row patient-info">
                          <div class="patient-role-font-style col-6">{{ jmbg }}</div>
                         <div class="patient-role-font-style col-4">{{ age }} years</div>
                         <div class="patient-role-font-style col-2">{{ gender }}</div>
                     </div>
                 </div>
+
+                
             </div>
         </div>
 
@@ -226,6 +236,24 @@
                               @add-patient-treated-drug="onPatientTreatedDrugAdded">
     </add-patient-treated-drug>
 
+    <update-patient-info-dialog :visible="updatePatientDialogVisible"
+                                :key="keyValue"
+                                :id="jmbg"
+                                :name="firstName"
+                                :lastname="lastName"
+                                :years="age"
+                                :gender="gender"
+                                :cancerspread="cancerSpread"
+                                :cancerdetectable="cancerDetectable"
+                                :cancergrown="cancerGrown"
+                                :cancerreappeared="cancerReappeared"
+                                :cancerspreadtoorgans="cancerSpreadToOrgans"
+                                :weightloss="weightLoss"
+                                :strongpain="strongPain"
+                                :lifequality="lifeQuality"
+                                @close-update-patient-dialog="onPatientInfoUpdateClose"
+                                @update-patient-data="updatePatientInfo"></update-patient-info-dialog>
+
 </div>
 </template>
 <script lang="ts">
@@ -245,16 +273,19 @@ import axios from "axios";
 import { defineComponent } from "vue";
 import AddPatientDiseaseDialog from "./dialogs/AddPatientDiseaseDialog.vue";
 import AddPatientTreatedDrug from "./dialogs/AddPatientTreatedDrug.vue";
+import UpdatePatientInfoDialog from "./dialogs/UpdatePatientInfoDialog.vue";
 
 export default defineComponent({ 
     name: 'Patient',
     components: {
         AddPatientDiseaseDialog,
-        AddPatientTreatedDrug
+        AddPatientTreatedDrug,
+        UpdatePatientInfoDialog
     },
     data() {
         return {
             addPatientDiseaseDialogVisible: false,
+            updatePatientDialogVisible: false,
             mode: 'CREATE',
             keyValue: 1,
             addPatientTreatedDrugDialogVisible: false,
@@ -299,6 +330,7 @@ export default defineComponent({
             this.weightLoss = response.data.weightLoss;
             this.cancerDetectable = response.data.isCancerDetectable;
             this.lifeQuality = response.data.lifeQuality;
+            this.keyValue += 1;
         })
         .catch((error) => {
             console.log("Error happened ", error.data);
@@ -363,6 +395,29 @@ export default defineComponent({
         onPatientTreatedDrugAdded(id?: string, name?: string): void {
             this.isTreatedWith.drugId = id;
             this.isTreatedWith.name = name;
+        },
+        onPatientInfoUpdateOpen(): void {
+            this.updatePatientDialogVisible = true;
+        },
+        onPatientInfoUpdateClose(): void {
+            this.updatePatientDialogVisible = false;
+        },
+        updatePatientInfo(patient: Patient): void {
+            this.person = patient;
+            this.jmbg = patient.jmbg;
+            this.firstName = patient.firstName;
+            this.lastName = patient.lastName;
+            this.age = patient.age;
+            this.gender = patient.gender;
+            this.cancerSpread = patient.isCancerSpread;
+            this.cancerGrown = patient.isCancerGrown;
+            this.cancerSpreadToOrgans = patient.isCancerSpreadToOrgans;
+            this.strongPain = patient.strongPain;
+            this.cancerReappeared = patient.isCancerReappear;
+            this.weightLoss = patient.weightLoss;
+            this.cancerDetectable = patient.isCancerDetectable;
+            this.lifeQuality = patient.lifeQuality;
+            this.getPatientInferredFacts();
         },
         isLoggedUserDoctor(): boolean {
             return !!UserRole.DOCTOR.includes(localStorage.getItem('role') || '');
@@ -453,4 +508,7 @@ export default defineComponent({
     padding-top: 20px;
 }
 
+.manage-patient-btn {
+  height: fit-content;
+}
 </style>
